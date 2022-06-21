@@ -47,6 +47,6 @@ public class BinanceApiConstants {
     public static ToStringStyle TO_STRING_BUILDER_STYLE = ToStringStyle.SHORT_PREFIX_STYLE;
     
 
-    public static final String API_KEY = "KH1i7JqUDXyR18fCiqf0FkgGoUtK8EwjEeLVRK2MP4159AxwaEzchXDyhVZd9CGN";
-    public static final String SECRET_KEY = "UArXdnFc2lEqKGaDYCM4c57tw7RwKSYUs1Esg5KtODxfJO9LPoWDQXCLkBp4wdpY";
+    public static final String API_KEY = "xxx";
+    public static final String SECRET_KEY = "xxx";
 }
