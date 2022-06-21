@@ -18,8 +18,7 @@ import sam.mon.assemble.model.util.StringArrayConverter;
 @Table(name = "tb_bn_future_exchang_info_entry")
 public class TbBnFutureExchangeInfoEntry {
 	
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  //DB.Column에 auto_increment 옵션 있어야함
+    @Id    
     private String symbol;
 
     private String status;
