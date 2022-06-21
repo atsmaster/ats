@@ -2,28 +2,37 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>sam.mon</groupId>
-		<artifactId>comm</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
-	</parent>
 
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.5.2</version>		
+	</parent>
+	
 	<groupId>sam.mon</groupId>
 	<artifactId>binance-client</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	
 
 	<properties>		
-		<okhttp3.version>3.12.1</okhttp3.version>
+		<!-- <okhttp3.version>3.12.1</okhttp3.version> -->
 		<fastjson.version>1.2.47</fastjson.version>
 	</properties>
 
 
 	<dependencies>
+	
+		<!-- lombok -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+	
 		<dependency>
 			<groupId>com.squareup.okhttp3</groupId>
 			<artifactId>okhttp</artifactId>
-			<version>${okhttp3.version}</version>
+			<!-- <version>${okhttp3.version}</version> -->
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba</groupId>
@@ -33,7 +42,7 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.2.3</version>
+			<!-- <version>1.2.3</version> -->
 		</dependency>
 		<dependency>
 			<groupId>org.powermock</groupId>
@@ -50,18 +59,18 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
+			<!-- <version>4.12</version> -->
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.6</version>
+			<!-- <version>3.6</version> -->
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.10</version>
+			<!-- <version>1.10</version> -->
 		</dependency>
 		<dependency>
 			<groupId>commons-lang</groupId>

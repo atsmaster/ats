@@ -39,6 +39,8 @@ public class TbBnFutureExchangeInfoEntry {
 
     private Long quotePrecision;
 
+    private Long onboardDate;
+
     @Convert(converter = StringArrayConverter.class)
     private List<String> orderTypes;
 

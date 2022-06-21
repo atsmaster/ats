@@ -239,8 +239,9 @@ class RestApiRequestImpl {
                 symbol.setQuantityPrecision(item.getLong("quantityPrecision"));
                 symbol.setBaseAssetPrecision(item.getLong("baseAssetPrecision"));
                 symbol.setQuotePrecision(item.getLong("quotePrecision"));
+                symbol.setOnboardDate(item.getLong("onboardDate"));
                 symbol.setOrderTypes(item.getJsonArray("orderTypes").convert2StringList());
-                symbol.setTimeInForce(item.getJsonArray("orderTypes").convert2StringList());
+                symbol.setTimeInForce(item.getJsonArray("timeInForce").convert2StringList());
                 List<List<Map<String, String>>> valList = new LinkedList<>();
                 JsonWrapperArray valArray = item.getJsonArray("filters");
                 valArray.forEach((val) -> {

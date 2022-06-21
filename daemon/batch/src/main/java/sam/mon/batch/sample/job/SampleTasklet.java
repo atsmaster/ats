@@ -1,5 +1,8 @@
 package sam.mon.batch.sample.job;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
@@ -14,14 +17,13 @@ import org.springframework.stereotype.Component;
 import com.binance.client.RequestOptions;
 import com.binance.client.SyncRequestClient;
 import com.binance.client.constant.BinanceApiConstants;
+import com.binance.client.model.market.ExchangeInfoEntry;
 
 import lombok.extern.slf4j.Slf4j;
-import sam.mon.assemble.model.TbTest;
-import sam.mon.assemble.model.binance.future.TbBnFutureCandleMin;
-import sam.mon.assemble.model.binance.future.TbBnFutureCandleMinId;
 import sam.mon.assemble.model.binance.future.TbBnFutureExchangeInfoEntry;
 import sam.mon.assemble.repo.TbTestRepo;
 import sam.mon.assemble.repo.binance.future.TbBnFutureCandleMinRepo;
+import sam.mon.assemble.repo.binance.future.TbBnFutureExchangeInfoEntryRepo;
 
 @Slf4j
 @Component
@@ -33,6 +35,9 @@ public class SampleTasklet implements Tasklet, StepExecutionListener{
 	
 	@Autowired
 	TbBnFutureCandleMinRepo tbBinanceFutureCandleMinRepo;
+	
+	@Autowired
+	TbBnFutureExchangeInfoEntryRepo tbBnFutureExchangeInfoEntryRepo;
 	
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
@@ -50,27 +55,53 @@ public class SampleTasklet implements Tasklet, StepExecutionListener{
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		// TODO Auto-generated method stub
 		
-		TbTest tt = new TbTest();
-		tt.setTbTestStr("hihihi");
-		tbTestRepo.save(tt);	
-		
-		TbBnFutureCandleMin tbfcm = new TbBnFutureCandleMin();		
-		TbBnFutureCandleMinId tbfcmId = new TbBnFutureCandleMinId();
-		tbfcmId.setOpenTime(1655560200000l);
-		tbfcmId.setSymbol("BTCUSDT");
-		tbfcm.setTbBinanceFutureCandleMinId(tbfcmId);
-		tbfcm.setCloseTime(1655560259999l);		
-		tbBinanceFutureCandleMinRepo.save(tbfcm);
-		
-		
-		TbBnFutureExchangeInfoEntry tbfeie = new TbBnFutureExchangeInfoEntry();
-		
+//		TbTest tt = new TbTest();
+//		tt.setTbTestStr("hihihi");
+//		tbTestRepo.save(tt);	
+//		
+//		TbBnFutureCandleMin tbfcm = new TbBnFutureCandleMin();		
+//		TbBnFutureCandleMinId tbfcmId = new TbBnFutureCandleMinId();
+//		tbfcmId.setOpenTime(1655560200000l);
+//		tbfcmId.setSymbol("BTCUSDT");
+//		tbfcm.setTbBinanceFutureCandleMinId(tbfcmId);
+//		tbfcm.setCloseTime(1655560259999l);		
+//		tbBinanceFutureCandleMinRepo.save(tbfcm);
+//		
+//		
+//		TbBnFutureExchangeInfoEntry tbfeie = new TbBnFutureExchangeInfoEntry();
+//		
+//
+//        RequestOptions options = new RequestOptions();
+//        SyncRequestClient syncRequestClient = SyncRequestClient.create(BinanceApiConstants.API_KEY, BinanceApiConstants.SECRET_KEY,
+//                options);
+//        System.out.println(syncRequestClient.getExchangeInformation());
+        
 
         RequestOptions options = new RequestOptions();
         SyncRequestClient syncRequestClient = SyncRequestClient.create(BinanceApiConstants.API_KEY, BinanceApiConstants.SECRET_KEY,
                 options);
-        System.out.println(syncRequestClient.getExchangeInformation());
         
+        List<TbBnFutureExchangeInfoEntry> lstTbfeie = new ArrayList<TbBnFutureExchangeInfoEntry>();
+        for(ExchangeInfoEntry eie : syncRequestClient.getExchangeInformation().getSymbols()) {
+        	TbBnFutureExchangeInfoEntry tbBnFutureExchangeInfoEntry = new TbBnFutureExchangeInfoEntry();
+        	tbBnFutureExchangeInfoEntry.setSymbol(eie.getSymbol());
+        	tbBnFutureExchangeInfoEntry.setStatus(eie.getStatus());
+        	tbBnFutureExchangeInfoEntry.setMaintMarginPercent(eie.getMaintMarginPercent());
+        	tbBnFutureExchangeInfoEntry.setRequiredMarginPercent(eie.getRequiredMarginPercent());
+        	tbBnFutureExchangeInfoEntry.setBaseAsset(eie.getBaseAsset());
+        	tbBnFutureExchangeInfoEntry.setQuoteAsset(eie.getQuoteAsset());
+        	tbBnFutureExchangeInfoEntry.setPricePrecision(eie.getPricePrecision());
+        	tbBnFutureExchangeInfoEntry.setQuantityPrecision(eie.getQuantityPrecision());
+        	tbBnFutureExchangeInfoEntry.setBaseAsset(eie.getBaseAsset());
+        	tbBnFutureExchangeInfoEntry.setQuotePrecision(eie.getQuotePrecision());
+        	tbBnFutureExchangeInfoEntry.setOnboardDate(eie.getOnboardDate());
+        	tbBnFutureExchangeInfoEntry.setOrderTypes(eie.getOrderTypes());
+        	tbBnFutureExchangeInfoEntry.setTimeInForce(eie.getTimeInForce());
+        	
+        	lstTbfeie.add(tbBnFutureExchangeInfoEntry);
+        }
+        
+        tbBnFutureExchangeInfoEntryRepo.saveAll(lstTbfeie);
         
 		return null;
 	}
