@@ -1,5 +1,6 @@
 package sam.mon.batch.sample.job;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,16 +93,33 @@ public class SampleTasklet implements Tasklet, StepExecutionListener{
         	tbBnFutureExchangeInfoEntry.setQuoteAsset(eie.getQuoteAsset());
         	tbBnFutureExchangeInfoEntry.setPricePrecision(eie.getPricePrecision());
         	tbBnFutureExchangeInfoEntry.setQuantityPrecision(eie.getQuantityPrecision());
-        	tbBnFutureExchangeInfoEntry.setBaseAsset(eie.getBaseAsset());
-        	tbBnFutureExchangeInfoEntry.setQuotePrecision(eie.getQuotePrecision());
-        	tbBnFutureExchangeInfoEntry.setOnboardDate(eie.getOnboardDate());
+        	tbBnFutureExchangeInfoEntry.setBaseAsset(eie.getBaseAsset());        	
+        	tbBnFutureExchangeInfoEntry.setOnboardDate(new Timestamp(eie.getOnboardDate()));
         	tbBnFutureExchangeInfoEntry.setOrderTypes(eie.getOrderTypes());
         	tbBnFutureExchangeInfoEntry.setTimeInForce(eie.getTimeInForce());
         	
-        	lstTbfeie.add(tbBnFutureExchangeInfoEntry);
+        	lstTbfeie.add(tbBnFutureExchangeInfoEntry);       	
+        	
+        	
+//        	break;
         }
-        
         tbBnFutureExchangeInfoEntryRepo.saveAll(lstTbfeie);
+        
+        
+//        Optional<TbBnFutureExchangeInfoEntry> tbb = tbBnFutureExchangeInfoEntryRepo.findById("1000LUNCBUSD");        
+//        tbb.get().setStatus("NOT_TRD");
+//        tbBnFutureExchangeInfoEntryRepo.save(tbb.get());
+        
+//		TbBnFutureExchangeInfoEntry eie2 = new TbBnFutureExchangeInfoEntry();
+//        eie2.setSymbol("BTC22");
+//        eie2.setStatus("TRADING");        
+//        tbBnFutureExchangeInfoEntryRepo.save(eie2);
+
+//		TbBnFutureExchangeInfoEntry eie3 = new TbBnFutureExchangeInfoEntry();
+//        eie2.setSymbol("BTC22");
+//        eie2.setStatus("Not_TRADING");    
+//        tbBnFutureExchangeInfoEntryRepo.save(eie2);
+
         
 		return null;
 	}
