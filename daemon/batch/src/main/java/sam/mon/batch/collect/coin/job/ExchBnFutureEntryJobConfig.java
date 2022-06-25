@@ -1,4 +1,4 @@
-package sam.mon.batch.sample.job;
+package sam.mon.batch.collect.coin.job;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -11,34 +11,36 @@ import org.springframework.context.annotation.Configuration;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import sam.mon.batch.collect.coin.step.ExchBnFutureEntryTasklet;
 
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
-public class SampleJobConfig {
+public class ExchBnFutureEntryJobConfig {
+
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
-    private final SampleTasklet sampleTasklet;
+    private final ExchBnFutureEntryTasklet exchBnFutureEntryTasklet;
     
     @Bean
-    public Job sampleJob() {
-    	log.info(">>>>> sampleJob");
-        return jobBuilderFactory.get("sampleJob")
+    public Job exchBnFutureEntryJob() {
+    	log.info(">>>>> start exchBnFutureEntryJob");
+        return jobBuilderFactory.get("exchBnFutureEntryJob")
         		.preventRestart()
-        		.start(sampleStep(null))
-//                .start(datalabCrawlStep(null))
+                .start(exchBnFutureEntryStep(null))
 //                .next(datalabWriteStep(null))
                 .build();
     }
 
-    
+
     @Bean
 	@JobScope
-	public Step sampleStep(@Value("#{jobParameters[requestDate]}") String requestDate) {
-		log.info(">>>>> This is sampleStep");
+	public Step exchBnFutureEntryStep(@Value("#{jobParameters[requestDate]}") String requestDate) {
+		log.info(">>>>> This is exchBnFutureEntryStep");
 		return stepBuilderFactory
 				.get("sampleStep")
-				.tasklet(sampleTasklet).build();
+				.tasklet(exchBnFutureEntryTasklet).build();
     }
+
 }

@@ -11,11 +11,11 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "tb_coin_future_entry_Hist")
+@Table(name = "tb_coin_future_entry_hist")
 public class TbCoinFutureEntryHist {
 
     @EmbeddedId    		
-	TbCoinFutureEntryHist tbCoinFutureEntryHist;
+    TbCoinFutureEntryHistId tbCoinFutureEntryHistId;
 
     @Column(columnDefinition = "varchar(50) comment '기초자산'")
     private String baseAsset;
