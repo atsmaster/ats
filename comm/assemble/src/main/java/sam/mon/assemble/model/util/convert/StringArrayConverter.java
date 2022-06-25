@@ -1,4 +1,4 @@
-package sam.mon.assemble.model.util;
+package sam.mon.assemble.model.util.convert;
 
 import java.util.Arrays;
 import java.util.List;

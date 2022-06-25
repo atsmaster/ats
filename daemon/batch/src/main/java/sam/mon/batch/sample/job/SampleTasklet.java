@@ -1,9 +1,5 @@
 package sam.mon.batch.sample.job;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.StepExecution;
@@ -15,16 +11,11 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.binance.client.RequestOptions;
-import com.binance.client.SyncRequestClient;
-import com.binance.client.constant.BinanceApiConstants;
-import com.binance.client.model.market.ExchangeInfoEntry;
-
 import lombok.extern.slf4j.Slf4j;
-import sam.mon.assemble.model.binance.future.TbBnFutureExchangeInfoEntry;
 import sam.mon.assemble.repo.TbTestRepo;
-import sam.mon.assemble.repo.binance.future.TbBnFutureCandleMinRepo;
-import sam.mon.assemble.repo.binance.future.TbBnFutureExchangeInfoEntryRepo;
+import sam.mon.assemble.repo.coin.binance.TbBnFutureCandleMinRepo;
+import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryHistRepo;
+import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryRepo;
 
 @Slf4j
 @Component
@@ -39,6 +30,9 @@ public class SampleTasklet implements Tasklet, StepExecutionListener{
 	
 	@Autowired
 	TbBnFutureExchangeInfoEntryRepo tbBnFutureExchangeInfoEntryRepo;
+	
+	@Autowired
+	TbBnFutureExchangeInfoEntryHistRepo tbBnFutureExchangeInfoEntryHistRepo;
 	
 	@Override
 	public void beforeStep(StepExecution stepExecution) {
@@ -78,32 +72,33 @@ public class SampleTasklet implements Tasklet, StepExecutionListener{
 //        System.out.println(syncRequestClient.getExchangeInformation());
         
 
-        RequestOptions options = new RequestOptions();
-        SyncRequestClient syncRequestClient = SyncRequestClient.create(BinanceApiConstants.API_KEY, BinanceApiConstants.SECRET_KEY,
-                options);
-        
-        List<TbBnFutureExchangeInfoEntry> lstTbfeie = new ArrayList<TbBnFutureExchangeInfoEntry>();
-        for(ExchangeInfoEntry eie : syncRequestClient.getExchangeInformation().getSymbols()) {
-        	TbBnFutureExchangeInfoEntry tbBnFutureExchangeInfoEntry = new TbBnFutureExchangeInfoEntry();
-        	tbBnFutureExchangeInfoEntry.setSymbol(eie.getSymbol());
-        	tbBnFutureExchangeInfoEntry.setStatus(eie.getStatus());
-        	tbBnFutureExchangeInfoEntry.setMaintMarginPercent(eie.getMaintMarginPercent());
-        	tbBnFutureExchangeInfoEntry.setRequiredMarginPercent(eie.getRequiredMarginPercent());
-        	tbBnFutureExchangeInfoEntry.setBaseAsset(eie.getBaseAsset());
-        	tbBnFutureExchangeInfoEntry.setQuoteAsset(eie.getQuoteAsset());
-        	tbBnFutureExchangeInfoEntry.setPricePrecision(eie.getPricePrecision());
-        	tbBnFutureExchangeInfoEntry.setQuantityPrecision(eie.getQuantityPrecision());
-        	tbBnFutureExchangeInfoEntry.setBaseAsset(eie.getBaseAsset());        	
-        	tbBnFutureExchangeInfoEntry.setOnboardDate(new Timestamp(eie.getOnboardDate()));
-        	tbBnFutureExchangeInfoEntry.setOrderTypes(eie.getOrderTypes());
-        	tbBnFutureExchangeInfoEntry.setTimeInForce(eie.getTimeInForce());
-        	
-        	lstTbfeie.add(tbBnFutureExchangeInfoEntry);       	
-        	
-        	
+//        RequestOptions options = new RequestOptions();
+//        SyncRequestClient syncRequestClient = SyncRequestClient.create(BinanceApiConstants.API_KEY, BinanceApiConstants.SECRET_KEY,
+//                options);
+//        
+//        List<TbBnFutureExchangeInfoEntry> lstTbfeie = new ArrayList<TbBnFutureExchangeInfoEntry>();
+//        for(ExchangeInfoEntry eie : syncRequestClient.getExchangeInformation().getSymbols()) {
+//        	TbBnFutureExchangeInfoEntry tbBnFutureExchangeInfoEntry = new TbBnFutureExchangeInfoEntry();
+//        	tbBnFutureExchangeInfoEntry.setSymbol(eie.getSymbol());
+//        	tbBnFutureExchangeInfoEntry.setStatus(eie.getStatus());
+//        	tbBnFutureExchangeInfoEntry.setMaintMarginPercent(eie.getMaintMarginPercent());
+//        	tbBnFutureExchangeInfoEntry.setRequiredMarginPercent(eie.getRequiredMarginPercent());
+//        	tbBnFutureExchangeInfoEntry.setBaseAsset(eie.getBaseAsset());
+//        	tbBnFutureExchangeInfoEntry.setQuoteAsset(eie.getQuoteAsset());
+//        	tbBnFutureExchangeInfoEntry.setPricePrecision(eie.getPricePrecision());
+//        	tbBnFutureExchangeInfoEntry.setQuantityPrecision(eie.getQuantityPrecision());
+//        	tbBnFutureExchangeInfoEntry.setBaseAsset(eie.getBaseAsset());        	
+//        	tbBnFutureExchangeInfoEntry.setOnboardDate(new Timestamp(eie.getOnboardDate()));
+//        	tbBnFutureExchangeInfoEntry.setOrderTypes(eie.getOrderTypes());
+//        	tbBnFutureExchangeInfoEntry.setTimeInForce(eie.getTimeInForce());
+//
+//        	tbBnFutureExchangeInfoEntry.setPriceUseYn(true);        	
+//        	lstTbfeie.add(tbBnFutureExchangeInfoEntry);       	
+//        	
+//        	
 //        	break;
-        }
-        tbBnFutureExchangeInfoEntryRepo.saveAll(lstTbfeie);
+//        }
+//        tbBnFutureExchangeInfoEntryRepo.saveAll(lstTbfeie);
         
         
 //        Optional<TbBnFutureExchangeInfoEntry> tbb = tbBnFutureExchangeInfoEntryRepo.findById("1000LUNCBUSD");        

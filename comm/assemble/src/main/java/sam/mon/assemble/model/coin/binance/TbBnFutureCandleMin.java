@@ -1,6 +1,7 @@
-package sam.mon.assemble.model.binance.future;
+package sam.mon.assemble.model.coin.binance;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -45,4 +46,10 @@ public class TbBnFutureCandleMin {
 
     @Column(columnDefinition = "decimal(30,10) comment '주문자산 시장가 매수 거래량'")
     private BigDecimal takerBuyQuoteAssetVolume;
+
+    @Column(columnDefinition = "timestamp comment '등록일시'")
+    private Timestamp regDd;
+    
+    @Column(columnDefinition = "varchar(50) comment '등록ID'")
+    private String regId;
 }
