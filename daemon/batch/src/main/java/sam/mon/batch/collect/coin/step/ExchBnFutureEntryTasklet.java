@@ -51,7 +51,7 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 		        Collectors.toMap(TbBnFutureExchangeInfoEntry::getSymbol, Function.identity()));		
 		
 		List<TbBnFutureExchangeInfoEntry> lstNewEntry = new LinkedList<TbBnFutureExchangeInfoEntry>();
-
+		
 		RequestOptions options = new RequestOptions();
 		SyncRequestClient syncRequestClient = SyncRequestClient.create(BinanceApiConstants.API_KEY,
 				BinanceApiConstants.SECRET_KEY, options);		
@@ -73,19 +73,9 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 				beforeEntry.setOrderTypes(resEntry.getOrderTypes());
 				beforeEntry.setTimeInForce(resEntry.getTimeInForce());		
 				
-				
-				if(beforeEntry.getSymbol().equals("BTCUSDT")) {
-					beforeEntry.setStatus("111123b");
-				}
-				
-				if(beforeEntry.getSymbol().equals("1000XECUSDT")) {
-					beforeEntry.setStatus("1111");
-				}
-				
 			}else { // new
 				TbBnFutureExchangeInfoEntry entry = new TbBnFutureExchangeInfoEntry();				
-				entry.setPersisNew(true);
-				
+				entry.setPersisNew(true); 				
 				entry.setSymbol(resEntry.getSymbol());
 				entry.setStatus(resEntry.getStatus());
 				entry.setMaintMarginPercent(resEntry.getMaintMarginPercent());
@@ -101,7 +91,6 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 				entry.setPriceUseYn(false);
 				entry.setRegDate(new Timestamp(System.currentTimeMillis()));
 				entry.setRegId(regId);
-				
 				
 				
 				
