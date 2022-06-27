@@ -1,8 +1,11 @@
 package sam.mon.batch.collect.coin.step;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -41,39 +44,89 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 
 		log.info(">>>>> start ExchBnFutureEntryTasklet");
 
+
+		// DB에 저장된 Entry
+		List<TbBnFutureExchangeInfoEntry> lstBeforeEntry = tbBnFutureExchangeInfoEntryRepo.findAll();		
+		Map<String, TbBnFutureExchangeInfoEntry> mapBeforeEntry = lstBeforeEntry.stream().collect(
+		        Collectors.toMap(TbBnFutureExchangeInfoEntry::getSymbol, Function.identity()));		
+		
+		List<TbBnFutureExchangeInfoEntry> lstNewEntry = new LinkedList<TbBnFutureExchangeInfoEntry>();
+
 		RequestOptions options = new RequestOptions();
 		SyncRequestClient syncRequestClient = SyncRequestClient.create(BinanceApiConstants.API_KEY,
-				BinanceApiConstants.SECRET_KEY, options);
-
-		List<TbBnFutureExchangeInfoEntry> lstAfterEntry = new ArrayList<TbBnFutureExchangeInfoEntry>();
-
-		
-		List<TbBnFutureExchangeInfoEntry> lstBeforeEntry = tbBnFutureExchangeInfoEntryRepo.findAll();		
-
+				BinanceApiConstants.SECRET_KEY, options);		
 		for (ExchangeInfoEntry resEntry : syncRequestClient.getExchangeInformation().getSymbols()) {
-			TbBnFutureExchangeInfoEntry entry = new TbBnFutureExchangeInfoEntry();
 			
-			entry.setSymbol(resEntry.getSymbol());
-			entry.setStatus(resEntry.getStatus());
-			entry.setMaintMarginPercent(resEntry.getMaintMarginPercent());
-			entry.setRequiredMarginPercent(resEntry.getRequiredMarginPercent());
-			entry.setBaseAsset(resEntry.getBaseAsset());
-			entry.setQuoteAsset(resEntry.getQuoteAsset());
-			entry.setPricePrecision(resEntry.getPricePrecision());
-			entry.setQuantityPrecision(resEntry.getQuantityPrecision());
-			entry.setBaseAsset(entry.getBaseAsset());
-			entry.setOnboardDate(new Timestamp(resEntry.getOnboardDate()));
-			entry.setOrderTypes(resEntry.getOrderTypes());
-			entry.setTimeInForce(resEntry.getTimeInForce());
-			// 비교항목 제외
-			entry.setPriceUseYn(true);
-			entry.setRegDate(Timestamp.valueOf("2020-12-12 01:24:25"));
-			entry.setRegId(regId);			
-			
-			lstAfterEntry.add(entry);
-		}
+			// update
+			if(mapBeforeEntry.keySet().contains(resEntry.getSymbol())) {
+				TbBnFutureExchangeInfoEntry beforeEntry = mapBeforeEntry.get(resEntry.getSymbol());	
+				beforeEntry.setSymbol(resEntry.getSymbol());
+				beforeEntry.setStatus(resEntry.getStatus());
+				beforeEntry.setMaintMarginPercent(resEntry.getMaintMarginPercent());
+				beforeEntry.setRequiredMarginPercent(resEntry.getRequiredMarginPercent());
+				beforeEntry.setBaseAsset(resEntry.getBaseAsset());
+				beforeEntry.setQuoteAsset(resEntry.getQuoteAsset());
+				beforeEntry.setPricePrecision(resEntry.getPricePrecision());
+				beforeEntry.setQuantityPrecision(resEntry.getQuantityPrecision());
+				beforeEntry.setBaseAsset(resEntry.getBaseAsset());
+				beforeEntry.setOnboardDate(new Timestamp(resEntry.getOnboardDate()));
+				beforeEntry.setOrderTypes(resEntry.getOrderTypes());
+				beforeEntry.setTimeInForce(resEntry.getTimeInForce());		
+				
+				
+				if(beforeEntry.getSymbol().equals("BTCUSDT")) {
+					beforeEntry.setStatus("111123b");
+				}
+				
+				if(beforeEntry.getSymbol().equals("1000XECUSDT")) {
+					beforeEntry.setStatus("1111");
+				}
+				
+			}else { // new
+				TbBnFutureExchangeInfoEntry entry = new TbBnFutureExchangeInfoEntry();				
+				entry.setPersisNew(true);
+				
+				entry.setSymbol(resEntry.getSymbol());
+				entry.setStatus(resEntry.getStatus());
+				entry.setMaintMarginPercent(resEntry.getMaintMarginPercent());
+				entry.setRequiredMarginPercent(resEntry.getRequiredMarginPercent());
+				entry.setBaseAsset(resEntry.getBaseAsset());
+				entry.setQuoteAsset(resEntry.getQuoteAsset());
+				entry.setPricePrecision(resEntry.getPricePrecision());
+				entry.setQuantityPrecision(resEntry.getQuantityPrecision());
+				entry.setBaseAsset(resEntry.getBaseAsset());
+				entry.setOnboardDate(new Timestamp(resEntry.getOnboardDate()));
+				entry.setOrderTypes(resEntry.getOrderTypes());
+				entry.setTimeInForce(resEntry.getTimeInForce());
+				entry.setPriceUseYn(false);
+				entry.setRegDate(new Timestamp(System.currentTimeMillis()));
+				entry.setRegId(regId);
+				
+				
+				
+				
+				lstNewEntry.add(entry);
+			}
+		}		
+		// 신규(Insert) Entry 처리
+		tbBnFutureExchangeInfoEntryRepo.saveAll(lstNewEntry);		
 		
-		tbBnFutureExchangeInfoEntryRepo.saveAll(lstAfterEntry);
+		// 변경(Update) Entry처리
+		List lstUpdatedEntry = tbBnFutureExchangeInfoEntryRepo.saveAll(lstBeforeEntry);		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+//		tbBnFutureExchangeInfoEntryRepo.saveAll(lstAfterEntry);
+		
+
 
 		return null;
 	}

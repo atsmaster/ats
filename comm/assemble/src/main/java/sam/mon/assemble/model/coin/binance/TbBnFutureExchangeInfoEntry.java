@@ -10,6 +10,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.data.domain.Persistable;
+
 import lombok.Data;
 import sam.mon.assemble.model.util.convert.BooleanToYNConverter;
 import sam.mon.assemble.model.util.convert.StringArrayConverter;
@@ -17,7 +19,7 @@ import sam.mon.assemble.model.util.convert.StringArrayConverter;
 @Data
 @Entity
 @Table(name = "tb_bn_future_exchang_info_entry")
-public class TbBnFutureExchangeInfoEntry {
+public class TbBnFutureExchangeInfoEntry implements Persistable<String> {
 	
     @Id    
     @Column(columnDefinition = "varchar(50) not null comment '종목명'")
@@ -66,7 +68,23 @@ public class TbBnFutureExchangeInfoEntry {
     private Timestamp regDate;
     
     @Column(columnDefinition = "varchar(50) comment '등록ID'")
-    private String regId;    
+    private String regId;
+    
+    private boolean persisNew;
+    
+	@Override
+	public String getId() {
+		return symbol;
+	}
+
+	@Override
+	public boolean isNew() {
+		return persisNew;
+	}    
+	
+	public void setNew(boolean b) {
+		this.persisNew = b;
+	}    
 
 //    private List<List<Map<String, String>>> filters;
 }
