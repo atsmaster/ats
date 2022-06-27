@@ -8,17 +8,21 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.SequenceGenerator;
+import javax.persistence.EntityListeners;
 import javax.persistence.Table;
 
+import org.springframework.data.domain.Persistable;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import lombok.Builder;
 import lombok.Data;
-import sam.mon.assemble.model.util.convert.BooleanToYNConverter;
 import sam.mon.assemble.model.util.convert.StringArrayConverter;
 
 @Data
 @Entity
+@EntityListeners(AuditingEntityListener.class) 
 @Table(name = "tb_bn_future_exchang_info_entry_hist")
-public class TbBnFutureExchangeInfoEntryHist {
+public class TbBnFutureExchangeInfoEntryHist implements Persistable<TbBnFutureExchangeInfoEntryHistId> {
 	
     @EmbeddedId    		
     TbBnFutureExchangeInfoEntryHistId tbBnFutureExchangeInfoEntryHistId;	
@@ -58,6 +62,8 @@ public class TbBnFutureExchangeInfoEntryHist {
     @Column(columnDefinition = "varchar(255) comment '주문실행 계획'")
     private List<String> timeInForce;    
 
+    // ------------------------------ 비교 속성 제외
+    
 //    @Convert(converter = BooleanToYNConverter.class)
 //    @Column(columnDefinition = "char(1) comment '가격 사용 가능 유무'")
 //    private Boolean priceUseYn;
@@ -67,4 +73,46 @@ public class TbBnFutureExchangeInfoEntryHist {
     
     @Column(columnDefinition = "varchar(50) comment '등록ID'")
     private String regId;    
+    
+
+    private boolean persisNew;
+    
+	@Override
+	public TbBnFutureExchangeInfoEntryHistId getId() {
+		return tbBnFutureExchangeInfoEntryHistId;
+	}
+
+	@Override
+	public boolean isNew() {
+		return persisNew;
+	}    
+	
+	public void setNew(boolean b) {
+		this.persisNew = b;
+	
+	}    
+	
+	public TbBnFutureExchangeInfoEntryHist() {};
+
+	@Builder
+	public TbBnFutureExchangeInfoEntryHist(String symbol, Timestamp symbolInfoChgDate, String status,  BigDecimal maintMarginPercent, BigDecimal requiredMarginPercent, String baseAsset, Long baseAssetPrecision,
+			String quoteAsset, Long pricePrecision, Long quantityPrecision, Timestamp onboardDate, List<String> orderTypes, List<String> timeInForce) {
+		
+		TbBnFutureExchangeInfoEntryHistId tbBnFutureExchangeInfoEntryHistId = new TbBnFutureExchangeInfoEntryHistId();
+		tbBnFutureExchangeInfoEntryHistId.setSymbol(symbol);
+		tbBnFutureExchangeInfoEntryHistId.setSymbolInfoChgDate(symbolInfoChgDate);		
+		
+		this.tbBnFutureExchangeInfoEntryHistId = tbBnFutureExchangeInfoEntryHistId;
+		this.status = status;
+		this.maintMarginPercent = maintMarginPercent;
+		this.requiredMarginPercent = requiredMarginPercent;
+		this.baseAsset = baseAsset;
+		this.baseAssetPrecision = baseAssetPrecision;
+		this.quoteAsset = quoteAsset;
+		this.pricePrecision = pricePrecision;
+		this.quantityPrecision = quantityPrecision;
+		this.onboardDate = onboardDate;
+		this.orderTypes = orderTypes;
+		this.timeInForce = timeInForce;		
+	}
 }

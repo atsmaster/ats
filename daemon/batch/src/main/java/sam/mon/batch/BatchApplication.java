@@ -4,10 +4,12 @@ import org.springframework.batch.core.configuration.annotation.EnableBatchProces
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
 @EnableBatchProcessing
+@EnableJpaAuditing
 @EntityScan(basePackages = {"sam.mon.assemble"})
 @EnableJpaRepositories(basePackages = {"sam.mon.assemble"})
 public class BatchApplication {

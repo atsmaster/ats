@@ -23,6 +23,9 @@ import com.binance.client.model.market.ExchangeInfoEntry;
 
 import lombok.extern.slf4j.Slf4j;
 import sam.mon.assemble.model.coin.binance.TbBnFutureExchangeInfoEntry;
+import sam.mon.assemble.model.coin.binance.TbBnFutureExchangeInfoEntryHist;
+import sam.mon.assemble.model.coin.binance.TbBnFutureExchangeInfoEntryHistId;
+import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryHistRepo;
 import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryRepo;
 
 @Slf4j
@@ -32,6 +35,9 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 
 	@Autowired
 	TbBnFutureExchangeInfoEntryRepo tbBnFutureExchangeInfoEntryRepo;
+	
+	@Autowired
+	TbBnFutureExchangeInfoEntryHistRepo tbBnFutureExchangeInfoEntryHistRepo;
 
 	@Value("${ats.daemon.batch.regid}")
 	private String regId;
@@ -51,29 +57,33 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 		        Collectors.toMap(TbBnFutureExchangeInfoEntry::getSymbol, Function.identity()));		
 		
 		List<TbBnFutureExchangeInfoEntry> lstNewEntry = new LinkedList<TbBnFutureExchangeInfoEntry>();
+		List<TbBnFutureExchangeInfoEntry> lstUpdateEntry = new LinkedList<TbBnFutureExchangeInfoEntry>();		
+
+		List<TbBnFutureExchangeInfoEntryHist> lstNewEntryHist = new LinkedList<TbBnFutureExchangeInfoEntryHist>();
 		
 		RequestOptions options = new RequestOptions();
 		SyncRequestClient syncRequestClient = SyncRequestClient.create(BinanceApiConstants.API_KEY,
 				BinanceApiConstants.SECRET_KEY, options);		
-		for (ExchangeInfoEntry resEntry : syncRequestClient.getExchangeInformation().getSymbols()) {
-			
+		for (ExchangeInfoEntry resEntry : syncRequestClient.getExchangeInformation().getSymbols()) {			
 			// update
 			if(mapBeforeEntry.keySet().contains(resEntry.getSymbol())) {
-				TbBnFutureExchangeInfoEntry beforeEntry = mapBeforeEntry.get(resEntry.getSymbol());	
-				beforeEntry.setSymbol(resEntry.getSymbol());
-				beforeEntry.setStatus(resEntry.getStatus());
-				beforeEntry.setMaintMarginPercent(resEntry.getMaintMarginPercent());
-				beforeEntry.setRequiredMarginPercent(resEntry.getRequiredMarginPercent());
-				beforeEntry.setBaseAsset(resEntry.getBaseAsset());
-				beforeEntry.setQuoteAsset(resEntry.getQuoteAsset());
-				beforeEntry.setPricePrecision(resEntry.getPricePrecision());
-				beforeEntry.setQuantityPrecision(resEntry.getQuantityPrecision());
-				beforeEntry.setBaseAsset(resEntry.getBaseAsset());
-				beforeEntry.setOnboardDate(new Timestamp(resEntry.getOnboardDate()));
-				beforeEntry.setOrderTypes(resEntry.getOrderTypes());
-				beforeEntry.setTimeInForce(resEntry.getTimeInForce());		
+				TbBnFutureExchangeInfoEntry entry = mapBeforeEntry.get(resEntry.getSymbol());
+				entry.setSymbol(resEntry.getSymbol());
+				entry.setStatus(resEntry.getStatus());
+				entry.setMaintMarginPercent(resEntry.getMaintMarginPercent());
+				entry.setRequiredMarginPercent(resEntry.getRequiredMarginPercent());
+				entry.setBaseAsset(resEntry.getBaseAsset());
+				entry.setBaseAssetPrecision(resEntry.getBaseAssetPrecision());
+				entry.setQuoteAsset(resEntry.getQuoteAsset());
+				entry.setPricePrecision(resEntry.getPricePrecision());
+				entry.setQuantityPrecision(resEntry.getQuantityPrecision());
+				entry.setOnboardDate(new Timestamp(resEntry.getOnboardDate()));
+				entry.setOrderTypes(resEntry.getOrderTypes());
+				entry.setTimeInForce(resEntry.getTimeInForce());			
 				
-			}else { // new
+				lstUpdateEntry.add(entry);
+			}else { 
+				// new
 				TbBnFutureExchangeInfoEntry entry = new TbBnFutureExchangeInfoEntry();				
 				entry.setPersisNew(true); 				
 				entry.setSymbol(resEntry.getSymbol());
@@ -81,30 +91,46 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 				entry.setMaintMarginPercent(resEntry.getMaintMarginPercent());
 				entry.setRequiredMarginPercent(resEntry.getRequiredMarginPercent());
 				entry.setBaseAsset(resEntry.getBaseAsset());
+				entry.setBaseAssetPrecision(resEntry.getBaseAssetPrecision());
 				entry.setQuoteAsset(resEntry.getQuoteAsset());
 				entry.setPricePrecision(resEntry.getPricePrecision());
 				entry.setQuantityPrecision(resEntry.getQuantityPrecision());
-				entry.setBaseAsset(resEntry.getBaseAsset());
 				entry.setOnboardDate(new Timestamp(resEntry.getOnboardDate()));
 				entry.setOrderTypes(resEntry.getOrderTypes());
-				entry.setTimeInForce(resEntry.getTimeInForce());
-				entry.setPriceUseYn(false);
-				entry.setRegDate(new Timestamp(System.currentTimeMillis()));
-				entry.setRegId(regId);
-				
-				
-				
+				entry.setTimeInForce(resEntry.getTimeInForce());	
+				entry.setPriceUseYn(false);						
 				lstNewEntry.add(entry);
+
+				// new hist
+				TbBnFutureExchangeInfoEntryHist entryHist = new TbBnFutureExchangeInfoEntryHist();
+				TbBnFutureExchangeInfoEntryHistId entryHistId = new TbBnFutureExchangeInfoEntryHistId();
+				entryHist.setPersisNew(true);
+
+				entryHistId.setSymbol(resEntry.getSymbol());
+//				entryHistId.setSymbolInfoChgDate(symbolInfoChgDate);
+				entryHist.setTbBnFutureExchangeInfoEntryHistId(entryHistId);
+				entryHist.setStatus(resEntry.getStatus());
+				entryHist.setMaintMarginPercent(resEntry.getMaintMarginPercent());
+				entryHist.setRequiredMarginPercent(resEntry.getRequiredMarginPercent());
+				entryHist.setBaseAsset(resEntry.getBaseAsset());
+				entryHist.setBaseAssetPrecision(resEntry.getBaseAssetPrecision());
+				entryHist.setQuoteAsset(resEntry.getQuoteAsset());
+				entryHist.setPricePrecision(resEntry.getPricePrecision());
+				entryHist.setQuantityPrecision(resEntry.getQuantityPrecision());
+				entryHist.setOnboardDate(new Timestamp(resEntry.getOnboardDate()));
+				entryHist.setOrderTypes(resEntry.getOrderTypes());
+				entryHist.setTimeInForce(resEntry.getTimeInForce());	
+										
+				lstNewEntryHist.add(entryHist);
 			}
 		}		
 		// 신규(Insert) Entry 처리
-		tbBnFutureExchangeInfoEntryRepo.saveAll(lstNewEntry);		
+		tbBnFutureExchangeInfoEntryRepo.saveAll(lstNewEntry);	
+		tbBnFutureExchangeInfoEntryHistRepo.saveAll(lstNewEntryHist);		
 		
 		// 변경(Update) Entry처리
-		List lstUpdatedEntry = tbBnFutureExchangeInfoEntryRepo.saveAll(lstBeforeEntry);		
-		
-		
-		
+		tbBnFutureExchangeInfoEntryRepo.saveAll(lstUpdateEntry);
+
 		
 		
 		
