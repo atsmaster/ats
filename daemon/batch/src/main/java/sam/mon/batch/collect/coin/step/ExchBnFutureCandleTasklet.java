@@ -60,6 +60,11 @@ public class ExchBnFutureCandleTasklet implements Tasklet {
 		 * 
 		 * */
 		
+		List<TbBnFutureExchangeInfoEntry> lstEntry = tbBnFutureExchangeInfoEntryRepo.findAll();
+		
+		for(TbBnFutureExchangeInfoEntry entry : lstEntry) {
+			
+		}
 		
 		log.info(">>>>> start ExchBnFutureCandleTasklet");
 

@@ -24,9 +24,9 @@ public class ExchBnFutureCandleJobConfig {
     private final ExchBnFutureEntryTasklet exchBnFutureEntryTasklet;
     
     @Bean
-    public Job exchBnFutureEntryJob() {
-    	log.info(">>>>> start exchBnFutureEntryJob");
-        return jobBuilderFactory.get("exchBnFutureEntryJob")
+    public Job ExchBnFutureCandleJob() {
+    	log.info(">>>>> start ExchBnFutureCandleJob");
+        return jobBuilderFactory.get("ExchBnFutureCandleJob")
         		.preventRestart()
                 .start(exchBnFutureEntryStep(null))
 //                .next(datalabWriteStep(null))
