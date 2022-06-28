@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.ChunkContext;
@@ -39,6 +42,9 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 	@Autowired
 	TbBnFutureExchangeInfoEntryHistRepo tbBnFutureExchangeInfoEntryHistRepo;
 
+	@PersistenceContext
+	private EntityManager entityManager;
+	
 	@Value("${ats.daemon.batch.regid}")
 	private String regId;
 
@@ -48,42 +54,74 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 
+		/**
+		 * 바이낸스 선물 거래소 종목 데이터 수집
+		 *  
+		 * 
+		 * */
+		
+		
 		log.info(">>>>> start ExchBnFutureEntryTasklet");
 
 
 		// DB에 저장된 Entry
 		List<TbBnFutureExchangeInfoEntry> lstBeforeEntry = tbBnFutureExchangeInfoEntryRepo.findAll();		
-		Map<String, TbBnFutureExchangeInfoEntry> mapBeforeEntry = lstBeforeEntry.stream().collect(
-		        Collectors.toMap(TbBnFutureExchangeInfoEntry::getSymbol, Function.identity()));		
+		Map<String, TbBnFutureExchangeInfoEntry> mapBeforeEntry = lstBeforeEntry.stream().collect(	
+		        Collectors.toMap(TbBnFutureExchangeInfoEntry::getSymbol, Function.identity()));	// Map ("BTCUSDT", TbBnFutureExchangeInfoEntry)
 		
-		List<TbBnFutureExchangeInfoEntry> lstNewEntry = new LinkedList<TbBnFutureExchangeInfoEntry>();
-		List<TbBnFutureExchangeInfoEntry> lstUpdateEntry = new LinkedList<TbBnFutureExchangeInfoEntry>();		
 
+		List<TbBnFutureExchangeInfoEntry> lstNewEntry = new LinkedList<TbBnFutureExchangeInfoEntry>();
+		List<TbBnFutureExchangeInfoEntry> lstUpdateEntry = new LinkedList<TbBnFutureExchangeInfoEntry>();	
+		
 		List<TbBnFutureExchangeInfoEntryHist> lstNewEntryHist = new LinkedList<TbBnFutureExchangeInfoEntryHist>();
+		List<TbBnFutureExchangeInfoEntryHist> lstUpdateEntryHist = new LinkedList<TbBnFutureExchangeInfoEntryHist>();		
 		
 		RequestOptions options = new RequestOptions();
 		SyncRequestClient syncRequestClient = SyncRequestClient.create(BinanceApiConstants.API_KEY,
 				BinanceApiConstants.SECRET_KEY, options);		
 		for (ExchangeInfoEntry resEntry : syncRequestClient.getExchangeInformation().getSymbols()) {			
-			// update
-			if(mapBeforeEntry.keySet().contains(resEntry.getSymbol())) {
-				TbBnFutureExchangeInfoEntry entry = mapBeforeEntry.get(resEntry.getSymbol());
-				entry.setSymbol(resEntry.getSymbol());
-				entry.setStatus(resEntry.getStatus());
-				entry.setMaintMarginPercent(resEntry.getMaintMarginPercent());
-				entry.setRequiredMarginPercent(resEntry.getRequiredMarginPercent());
-				entry.setBaseAsset(resEntry.getBaseAsset());
-				entry.setBaseAssetPrecision(resEntry.getBaseAssetPrecision());
-				entry.setQuoteAsset(resEntry.getQuoteAsset());
-				entry.setPricePrecision(resEntry.getPricePrecision());
-				entry.setQuantityPrecision(resEntry.getQuantityPrecision());
-				entry.setOnboardDate(new Timestamp(resEntry.getOnboardDate()));
-				entry.setOrderTypes(resEntry.getOrderTypes());
-				entry.setTimeInForce(resEntry.getTimeInForce());			
+			
+			if(mapBeforeEntry.keySet().contains(resEntry.getSymbol())) { // update
+				TbBnFutureExchangeInfoEntry entry = mapBeforeEntry.get(resEntry.getSymbol());	
+
+				if(!entry.equalsApiVo(resEntry)) {	// db와 res결과가 다를때
+					// TbBnFutureExchangeInfoEntry
+					entry.setStatus(resEntry.getStatus());
+					entry.setMaintMarginPercent(resEntry.getMaintMarginPercent());
+					entry.setRequiredMarginPercent(resEntry.getRequiredMarginPercent());
+					entry.setBaseAsset(resEntry.getBaseAsset());
+					entry.setBaseAssetPrecision(resEntry.getBaseAssetPrecision());
+					entry.setQuoteAsset(resEntry.getQuoteAsset());
+					entry.setPricePrecision(resEntry.getPricePrecision());
+					entry.setQuantityPrecision(resEntry.getQuantityPrecision());
+					entry.setOnboardDate(new Timestamp(resEntry.getOnboardDate()));
+					entry.setOrderTypes(resEntry.getOrderTypes());
+					entry.setTimeInForce(resEntry.getTimeInForce());	
+					lstUpdateEntry.add(entry);
+					
+					// TbBnFutureExchangeInfoEntryHist
+					TbBnFutureExchangeInfoEntryHist entryHist = new TbBnFutureExchangeInfoEntryHist();
+	 				TbBnFutureExchangeInfoEntryHistId entryHistId = new TbBnFutureExchangeInfoEntryHistId();		
+	 				entryHist.setPersisNew(true); 			
+	 				entryHistId.setSymbol(resEntry.getSymbol());
+//	 				entryHistId.setSymbolInfoChgDate();
+	 				entryHist.setTbBnFutureExchangeInfoEntryHistId(entryHistId);
+	 				entryHist.setStatus(resEntry.getStatus());                                     
+	 				entryHist.setMaintMarginPercent(resEntry.getMaintMarginPercent());             
+	 				entryHist.setRequiredMarginPercent(resEntry.getRequiredMarginPercent());       
+	 				entryHist.setBaseAsset(resEntry.getBaseAsset());                               
+	 				entryHist.setBaseAssetPrecision(resEntry.getBaseAssetPrecision());             
+	 				entryHist.setQuoteAsset(resEntry.getQuoteAsset());                             
+	 				entryHist.setPricePrecision(resEntry.getPricePrecision());                     
+	 				entryHist.setQuantityPrecision(resEntry.getQuantityPrecision());               
+	 				entryHist.setOnboardDate(new Timestamp(resEntry.getOnboardDate()));            
+	 				entryHist.setOrderTypes(resEntry.getOrderTypes());                             
+	 				entryHist.setTimeInForce(resEntry.getTimeInForce());	  
+	 				lstUpdateEntryHist.add(entryHist);	 				
+				}				
 				
-				lstUpdateEntry.add(entry);
-			}else { 
-				// new
+			}else { // new
+				// TbBnFutureExchangeInfoEntry
 				TbBnFutureExchangeInfoEntry entry = new TbBnFutureExchangeInfoEntry();				
 				entry.setPersisNew(true); 				
 				entry.setSymbol(resEntry.getSymbol());
@@ -100,48 +138,35 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 				entry.setTimeInForce(resEntry.getTimeInForce());	
 				entry.setPriceUseYn(false);						
 				lstNewEntry.add(entry);
-
-				// new hist
+				
+				// TbBnFutureExchangeInfoEntryHist
 				TbBnFutureExchangeInfoEntryHist entryHist = new TbBnFutureExchangeInfoEntryHist();
-				TbBnFutureExchangeInfoEntryHistId entryHistId = new TbBnFutureExchangeInfoEntryHistId();
-				entryHist.setPersisNew(true);
-
-				entryHistId.setSymbol(resEntry.getSymbol());
-//				entryHistId.setSymbolInfoChgDate(symbolInfoChgDate);
-				entryHist.setTbBnFutureExchangeInfoEntryHistId(entryHistId);
-				entryHist.setStatus(resEntry.getStatus());
-				entryHist.setMaintMarginPercent(resEntry.getMaintMarginPercent());
-				entryHist.setRequiredMarginPercent(resEntry.getRequiredMarginPercent());
-				entryHist.setBaseAsset(resEntry.getBaseAsset());
-				entryHist.setBaseAssetPrecision(resEntry.getBaseAssetPrecision());
-				entryHist.setQuoteAsset(resEntry.getQuoteAsset());
-				entryHist.setPricePrecision(resEntry.getPricePrecision());
-				entryHist.setQuantityPrecision(resEntry.getQuantityPrecision());
-				entryHist.setOnboardDate(new Timestamp(resEntry.getOnboardDate()));
-				entryHist.setOrderTypes(resEntry.getOrderTypes());
-				entryHist.setTimeInForce(resEntry.getTimeInForce());	
-										
-				lstNewEntryHist.add(entryHist);
+ 				TbBnFutureExchangeInfoEntryHistId entryHistId = new TbBnFutureExchangeInfoEntryHistId();		
+ 				entryHist.setPersisNew(true); 			
+ 				entryHistId.setSymbol(resEntry.getSymbol());
+// 				entryHistId.setSymbolInfoChgDate();
+ 				entryHist.setTbBnFutureExchangeInfoEntryHistId(entryHistId);
+ 				entryHist.setStatus(resEntry.getStatus());                                     
+ 				entryHist.setMaintMarginPercent(resEntry.getMaintMarginPercent());             
+ 				entryHist.setRequiredMarginPercent(resEntry.getRequiredMarginPercent());       
+ 				entryHist.setBaseAsset(resEntry.getBaseAsset());                               
+ 				entryHist.setBaseAssetPrecision(resEntry.getBaseAssetPrecision());             
+ 				entryHist.setQuoteAsset(resEntry.getQuoteAsset());                             
+ 				entryHist.setPricePrecision(resEntry.getPricePrecision());                     
+ 				entryHist.setQuantityPrecision(resEntry.getQuantityPrecision());               
+ 				entryHist.setOnboardDate(new Timestamp(resEntry.getOnboardDate()));            
+ 				entryHist.setOrderTypes(resEntry.getOrderTypes());                             
+ 				entryHist.setTimeInForce(resEntry.getTimeInForce());	  
+ 				lstNewEntryHist.add(entryHist);
 			}
 		}		
 		// 신규(Insert) Entry 처리
-		tbBnFutureExchangeInfoEntryRepo.saveAll(lstNewEntry);	
-		tbBnFutureExchangeInfoEntryHistRepo.saveAll(lstNewEntryHist);		
+		tbBnFutureExchangeInfoEntryRepo.saveAll(lstNewEntry);
+		tbBnFutureExchangeInfoEntryHistRepo.saveAll(lstNewEntryHist);
 		
 		// 변경(Update) Entry처리
 		tbBnFutureExchangeInfoEntryRepo.saveAll(lstUpdateEntry);
-
-		
-		
-		
-		
-		
-		
-		
-		
-//		tbBnFutureExchangeInfoEntryRepo.saveAll(lstAfterEntry);
-		
-
+		tbBnFutureExchangeInfoEntryHistRepo.saveAll(lstUpdateEntryHist);
 
 		return null;
 	}

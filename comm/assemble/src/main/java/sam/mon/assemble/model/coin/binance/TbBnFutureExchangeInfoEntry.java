@@ -16,17 +16,16 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import lombok.Builder;
+import com.binance.client.model.market.ExchangeInfoEntry;
+
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import sam.mon.assemble.model.util.convert.BooleanToYNConverter;
 import sam.mon.assemble.model.util.convert.StringArrayConverter;
 
 @Data
 @Entity
-@EntityListeners(AuditingEntityListener.class) 
+@EntityListeners(AuditingEntityListener.class) // @CreatedDate, @LastModifiedDate
 @Table(name = "tb_bn_future_exchang_info_entry")
-@EqualsAndHashCode(exclude = {"priceUseYn", "regDate", "corrDate", "persisNew"})
 public class TbBnFutureExchangeInfoEntry implements Persistable<String> {
 	
     @Id    
@@ -97,24 +96,23 @@ public class TbBnFutureExchangeInfoEntry implements Persistable<String> {
 	public void setNew(boolean b) {
 		this.persisNew = b;
 	
-	}    
+	}    	
 	
-	public TbBnFutureExchangeInfoEntry() {};
-	
-	@Builder
-	public TbBnFutureExchangeInfoEntry(String symbol, String status, BigDecimal maintMarginPercent, BigDecimal requiredMarginPercent, String baseAsset, Long baseAssetPrecision,
-			String quoteAsset, Long pricePrecision, Long quantityPrecision, Timestamp onboardDate, List<String> orderTypes, List<String> timeInForce) {
-		this.symbol = symbol;
-		this.status = status;
-		this.maintMarginPercent = maintMarginPercent;
-		this.requiredMarginPercent = requiredMarginPercent;
-		this.baseAsset = baseAsset;
-		this.baseAssetPrecision = baseAssetPrecision;
-		this.quoteAsset = quoteAsset;
-		this.pricePrecision = pricePrecision;
-		this.quantityPrecision = quantityPrecision;
-		this.onboardDate = onboardDate;
-		this.orderTypes = orderTypes;
-		this.timeInForce = timeInForce;		
+	public boolean equalsApiVo(ExchangeInfoEntry eie) {
+		if(!this.symbol.equals(eie.getSymbol())) {return false; }
+		if(!this.status.equals(eie.getStatus())) {return false; }
+		if(this.maintMarginPercent.compareTo(eie.getMaintMarginPercent())!=0) {return false; }
+		if(this.requiredMarginPercent.compareTo(eie.getRequiredMarginPercent())!=0) {return false; }
+		if(!this.baseAsset.equals(eie.getBaseAsset())) {return false; }
+		if(this.baseAssetPrecision.compareTo(eie.getBaseAssetPrecision())!=0) {return false; }
+		if(!this.quoteAsset.equals(eie.getQuoteAsset())) {return false; }
+		if(this.pricePrecision.compareTo(eie.getPricePrecision())!=0) {return false; }
+		if(this.quantityPrecision.compareTo(eie.getQuantityPrecision())!=0) {return false; }
+		if(this.onboardDate.compareTo(new Timestamp(eie.getOnboardDate()))!=0) {return false; }
+		if(!this.orderTypes.toString().equals(eie.getOrderTypes().toString())) {return false; }
+		if(!this.timeInForce.toString().equals(eie.getTimeInForce().toString())) {return false; }
+		
+		return true;
 	}
+
 }

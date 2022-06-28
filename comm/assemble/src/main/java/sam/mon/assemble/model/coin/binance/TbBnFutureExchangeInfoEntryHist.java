@@ -11,6 +11,8 @@ import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Table;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -69,10 +71,12 @@ public class TbBnFutureExchangeInfoEntryHist implements Persistable<TbBnFutureEx
 //    private Boolean priceUseYn;
 
     @Column(columnDefinition = "timestamp comment '등록일시'")
+    @CreatedDate
     private Timestamp regDate;
     
-    @Column(columnDefinition = "varchar(50) comment '등록ID'")
-    private String regId;    
+    @Column(columnDefinition = "timestamp comment '수정일시'")
+    @LastModifiedDate
+    private Timestamp corrDate;
     
 
     private boolean persisNew;
@@ -91,28 +95,5 @@ public class TbBnFutureExchangeInfoEntryHist implements Persistable<TbBnFutureEx
 		this.persisNew = b;
 	
 	}    
-	
-	public TbBnFutureExchangeInfoEntryHist() {};
 
-	@Builder
-	public TbBnFutureExchangeInfoEntryHist(String symbol, Timestamp symbolInfoChgDate, String status,  BigDecimal maintMarginPercent, BigDecimal requiredMarginPercent, String baseAsset, Long baseAssetPrecision,
-			String quoteAsset, Long pricePrecision, Long quantityPrecision, Timestamp onboardDate, List<String> orderTypes, List<String> timeInForce) {
-		
-		TbBnFutureExchangeInfoEntryHistId tbBnFutureExchangeInfoEntryHistId = new TbBnFutureExchangeInfoEntryHistId();
-		tbBnFutureExchangeInfoEntryHistId.setSymbol(symbol);
-		tbBnFutureExchangeInfoEntryHistId.setSymbolInfoChgDate(symbolInfoChgDate);		
-		
-		this.tbBnFutureExchangeInfoEntryHistId = tbBnFutureExchangeInfoEntryHistId;
-		this.status = status;
-		this.maintMarginPercent = maintMarginPercent;
-		this.requiredMarginPercent = requiredMarginPercent;
-		this.baseAsset = baseAsset;
-		this.baseAssetPrecision = baseAssetPrecision;
-		this.quoteAsset = quoteAsset;
-		this.pricePrecision = pricePrecision;
-		this.quantityPrecision = quantityPrecision;
-		this.onboardDate = onboardDate;
-		this.orderTypes = orderTypes;
-		this.timeInForce = timeInForce;		
-	}
 }
