@@ -1,4 +1,4 @@
-package sam.mon.batch.collect.coin.step;
+package sam.mon.batch.collect.coin.task;
 
 import java.sql.Timestamp;
 import java.util.LinkedList;

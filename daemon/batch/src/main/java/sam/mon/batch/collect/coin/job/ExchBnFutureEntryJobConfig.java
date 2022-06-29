@@ -11,36 +11,36 @@ import org.springframework.context.annotation.Configuration;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import sam.mon.batch.collect.coin.step.ExchBnFutureEntryTasklet;
+import sam.mon.batch.collect.coin.task.ExchBnFutureEntryTasklet;
 
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
 public class ExchBnFutureEntryJobConfig {
 
-    private final JobBuilderFactory jobBuilderFactory;
-    private final StepBuilderFactory stepBuilderFactory;
-
-    private final ExchBnFutureEntryTasklet exchBnFutureEntryTasklet;
-    
-    @Bean
-    public Job exchBnFutureEntryJob() {
-    	log.info(">>>>> start exchBnFutureEntryJob");
-        return jobBuilderFactory.get("exchBnFutureEntryJob")
-        		.preventRestart()
-                .start(exchBnFutureEntryStep(null))
-//                .next(datalabWriteStep(null))
-                .build();
-    }
-
-
-    @Bean
-	@JobScope
-	public Step exchBnFutureEntryStep(@Value("#{jobParameters[requestDate]}") String requestDate) {
-		log.info(">>>>> This is exchBnFutureEntryStep");
-		return stepBuilderFactory
-				.get("sampleStep")
-				.tasklet(exchBnFutureEntryTasklet).build();
-    }
+//    private final JobBuilderFactory jobBuilderFactory;
+//    private final StepBuilderFactory stepBuilderFactory;
+//
+//    private final ExchBnFutureEntryTasklet exchBnFutureEntryTasklet;
+//    
+//    @Bean
+//    public Job exchBnFutureEntryJob() {
+//    	log.info(">>>>> start exchBnFutureEntryJob");
+//        return jobBuilderFactory.get("exchBnFutureEntryJob")
+//        		.preventRestart()
+//                .start(exchBnFutureEntryStep(null))
+////                .next(datalabWriteStep(null))
+//                .build();
+//    }
+//
+//
+//    @Bean
+//	@JobScope
+//	public Step exchBnFutureEntryStep(@Value("#{jobParameters[requestDate]}") String requestDate) {
+//		log.info(">>>>> This is exchBnFutureEntryStep");
+//		return stepBuilderFactory
+//				.get("sampleStep")
+//				.tasklet(exchBnFutureEntryTasklet).build();
+//    }
 
 }

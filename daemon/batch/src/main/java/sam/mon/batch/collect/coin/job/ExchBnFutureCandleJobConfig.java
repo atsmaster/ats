@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import sam.mon.batch.collect.coin.step.ExchBnFutureEntryTasklet;
+import sam.mon.batch.collect.coin.task.ExchBnFutureEntryTasklet;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,6 +40,7 @@ public class ExchBnFutureCandleJobConfig {
 		log.info(">>>>> This is exchBnFutureEntryStep");
 		return stepBuilderFactory
 				.get("sampleStep")
+				.tasklet(exchBnFutureEntryTasklet)
 				.tasklet(exchBnFutureEntryTasklet).build();
     }
 
