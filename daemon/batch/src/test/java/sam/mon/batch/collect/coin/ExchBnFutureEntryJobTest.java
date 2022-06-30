@@ -2,20 +2,28 @@ package sam.mon.batch.collect.coin;
 
 import java.sql.Timestamp;
 
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.JobRepositoryTestUtils;
-import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import sam.mon.batch.TestBatchLegacyConfig;
 import sam.mon.batch.collect.coin.job.ExchBnFutureEntryJobConfig;
+import sam.mon.batch.collect.coin.task.ExchBnFutureEntryTasklet;
 
 @RunWith(SpringRunner.class)
-@SpringBatchTest
-@ContextConfiguration(classes = {ExchBnFutureEntryJobConfig.class})
+//@SpringBatchTest
+@SpringBootTest(classes = { TestBatchLegacyConfig.class, ExchBnFutureEntryJobConfig.class, ExchBnFutureEntryTasklet.class})
+
 public class ExchBnFutureEntryJobTest {
 
 	@Autowired
@@ -25,10 +33,10 @@ public class ExchBnFutureEntryJobTest {
     private JobRepositoryTestUtils jobRepositoryTestUtils;
 
 
-//    @Before
-//    public void clearMetadata() {
-//        jobRepositoryTestUtils.removeJobExecutions();
-//    }
+    @Before
+    public void clearMetadata() {
+        jobRepositoryTestUtils.removeJobExecutions();
+    }
 
     @Test
     public void testJob() throws Exception {
@@ -37,18 +45,13 @@ public class ExchBnFutureEntryJobTest {
         Timestamp timestamp = new Timestamp(datetime);
         System.out.println(timestamp.toString());
     	
-//        // given
-//        JobParameters jobParameters = new JobParametersBuilder() 
-//        		
-//                .addString("requestDate", "20211219090001")
-//                .toJobParameters();
-//		
-//
-//        // when
-//        JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
-//
-//        // then
-//        Assert.assertEquals(ExitStatus.COMPLETED,
-//            jobExecution.getExitStatus());
+        JobParameters jobParameters = new JobParametersBuilder()         		
+                .addString("requestDate", "20211219090001")
+                .toJobParameters();		
+
+        JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
+
+        Assert.assertEquals(ExitStatus.COMPLETED,
+            jobExecution.getExitStatus());
     }
 }

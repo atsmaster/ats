@@ -41,9 +41,6 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 	
 	@Autowired
 	TbBnFutureExchangeInfoEntryHistRepo tbBnFutureExchangeInfoEntryHistRepo;
-
-	@PersistenceContext
-	private EntityManager entityManager;
 	
 	@Value("${ats.daemon.batch.regid}")
 	private String regId;
