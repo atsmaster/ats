@@ -12,18 +12,25 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.batch.test.JobRepositoryTestUtils;
+import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import sam.mon.batch.TestBatchLegacyConfig;
+import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryHistRepo;
+import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryRepo;
+import sam.mon.batch.TestBatchConfig;
 import sam.mon.batch.collect.coin.job.ExchBnFutureEntryJobConfig;
 import sam.mon.batch.collect.coin.task.ExchBnFutureEntryTasklet;
 
 @RunWith(SpringRunner.class)
-//@SpringBatchTest
-@SpringBootTest(classes = { TestBatchLegacyConfig.class, ExchBnFutureEntryJobConfig.class, ExchBnFutureEntryTasklet.class})
-
+@SpringBatchTest
+@SpringBootTest(classes = { TestBatchConfig.class, ExchBnFutureEntryJobConfig.class, ExchBnFutureEntryTasklet.class
+		, TbBnFutureExchangeInfoEntryRepo.class, TbBnFutureExchangeInfoEntryHistRepo.class})
+@EntityScan(basePackages = {"sam.mon.batch", "sam.mon.assemble"})
+@EnableJpaRepositories(basePackages = {"sam.mon.batch", "sam.mon.assemble"})
 public class ExchBnFutureEntryJobTest {
 
 	@Autowired
@@ -46,7 +53,7 @@ public class ExchBnFutureEntryJobTest {
         System.out.println(timestamp.toString());
     	
         JobParameters jobParameters = new JobParametersBuilder()         		
-                .addString("requestDate", "20211219090001")
+                .addString("requestDate", timestamp.toString())
                 .toJobParameters();		
 
         JobExecution jobExecution = jobLauncherTestUtils.launchJob(jobParameters);
@@ -55,3 +62,4 @@ public class ExchBnFutureEntryJobTest {
             jobExecution.getExitStatus());
     }
 }
+	

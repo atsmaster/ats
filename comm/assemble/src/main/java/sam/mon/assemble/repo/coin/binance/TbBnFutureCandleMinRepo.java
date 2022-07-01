@@ -15,12 +15,10 @@ public interface TbBnFutureCandleMinRepo extends JpaRepository<TbBnFutureCandleM
 	
 	 @Query(value =
 		        "SELECT "+
-		            " rp.year AS year " +
-		            ", SUM(rp.loan_small) AS smallSum " +
-		            ", SUM(rp.loan_major) AS majorSum " +
-		            ", SUM(rp.loan_total) AS totalSum " +
-		            "FROM report rp " +
-		            "GROUP BY rp.year"
+		            " cm.symbol AS symbol " +
+		            ", SUM(rp.time_open) AS time_open " +
+		            "FROM tb_bn_future_candle_min cm " +
+		            "GROUP BY cm.symbol"
 		        , nativeQuery = true
 		    )
 		    List<TbBnFutureCandleMin> findMaxOpenTimeBySymbol();

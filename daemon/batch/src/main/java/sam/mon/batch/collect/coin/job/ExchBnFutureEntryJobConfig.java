@@ -2,12 +2,10 @@ package sam.mon.batch.collect.coin.job;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,10 +16,10 @@ import sam.mon.batch.collect.coin.task.ExchBnFutureEntryTasklet;
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
-@ConfigurationProperties
-@EnableBatchProcessing
 public class ExchBnFutureEntryJobConfig {
 
+    public static final String JOB_NAME = "exchBnFutureEntryJob";
+	
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
@@ -32,7 +30,7 @@ public class ExchBnFutureEntryJobConfig {
     @Bean
     public Job exchBnFutureEntryJob() {
     	log.info(">>>>> start exchBnFutureEntryJob");
-        return jobBuilderFactory.get("exchBnFutureEntryJob")
+        return jobBuilderFactory.get(JOB_NAME)
         		.preventRestart()
                 .start(exchBnFutureEntryStep(null))
 //                .next(datalabWriteStep(null))

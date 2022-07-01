@@ -1,7 +1,5 @@
 package sam.mon.batch.collect.coin.task;
 
-import java.sql.Timestamp;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -19,15 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.binance.client.RequestOptions;
-import com.binance.client.SyncRequestClient;
-import com.binance.client.constant.BinanceApiConstants;
-import com.binance.client.model.market.ExchangeInfoEntry;
-
 import lombok.extern.slf4j.Slf4j;
+import sam.mon.assemble.model.coin.binance.TbBnFutureCandleMin;
 import sam.mon.assemble.model.coin.binance.TbBnFutureExchangeInfoEntry;
-import sam.mon.assemble.model.coin.binance.TbBnFutureExchangeInfoEntryHist;
-import sam.mon.assemble.model.coin.binance.TbBnFutureExchangeInfoEntryHistId;
+import sam.mon.assemble.repo.coin.binance.TbBnFutureCandleMinRepo;
 import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryHistRepo;
 import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryRepo;
 
@@ -41,6 +34,9 @@ public class ExchBnFutureCandleTasklet implements Tasklet {
 	
 	@Autowired
 	TbBnFutureExchangeInfoEntryHistRepo tbBnFutureExchangeInfoEntryHistRepo;
+	
+	@Autowired
+	TbBnFutureCandleMinRepo tbBnFutureCandleMinRepo;
 
 	@PersistenceContext
 	private EntityManager entityManager;
@@ -53,20 +49,17 @@ public class ExchBnFutureCandleTasklet implements Tasklet {
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-
-		/**
-		 * 바이낸스 선물 거래소의 종목별, N봉별 저장
-		 *  
-		 * 
-		 * */
+		
+		log.info(">>>>> start ExchBnFutureCandleTasklet");		
 		
 		List<TbBnFutureExchangeInfoEntry> lstEntry = tbBnFutureExchangeInfoEntryRepo.findAll();
+		Map<String, TbBnFutureExchangeInfoEntry> mapEntry = lstEntry.stream().collect(	
+		        Collectors.toMap(TbBnFutureExchangeInfoEntry::getSymbol, Function.identity()));	// Map ("BTCUSDT", TbBnFutureExchangeInfoEntry)
 		
-		for(TbBnFutureExchangeInfoEntry entry : lstEntry) {
+		
+		for(TbBnFutureCandleMin cm : tbBnFutureCandleMinRepo.findMaxOpenTimeBySymbol()) {
 			
 		}
-		
-		log.info(">>>>> start ExchBnFutureCandleTasklet");
 
 		
 		

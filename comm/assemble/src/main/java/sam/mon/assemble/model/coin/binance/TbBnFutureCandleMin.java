@@ -18,7 +18,7 @@ public class TbBnFutureCandleMin {
     @EmbeddedId
 //	private String symbol;
 //  private Long openTime;
-	TbBnFutureCandleMinId tbBinanceFutureCandleMinId;	
+	private TbBnFutureCandleMinId tbBinanceFutureCandleMinId;	
 
     @Column(columnDefinition = "decimal(30,10) comment '시가'")    
     private BigDecimal open;
@@ -52,4 +52,30 @@ public class TbBnFutureCandleMin {
     
     @Column(columnDefinition = "varchar(50) comment '등록ID'")
     private String regId;
+
+    // ---------------------------------------------------------------
+    
+    public TbBnFutureCandleMin() {
+    	this.tbBinanceFutureCandleMinId = new TbBnFutureCandleMinId();
+    }
+    
+    
+    public String getSymbol() {
+    	return tbBinanceFutureCandleMinId.getSymbol();
+    }
+    
+    public void setSymbol(String symbol) {
+    	tbBinanceFutureCandleMinId.setSymbol(symbol);
+    }
+    
+    public Timestamp getTimeOpen() {
+    	return tbBinanceFutureCandleMinId.getTimeOpen();
+    }
+
+    
+    public void setTimeOpen(Timestamp timeOpen) {
+    	tbBinanceFutureCandleMinId.setTimeOpen(timeOpen);
+    }
+    
+    
 }
