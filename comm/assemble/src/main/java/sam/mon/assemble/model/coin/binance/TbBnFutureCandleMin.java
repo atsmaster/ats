@@ -53,11 +53,9 @@ public class TbBnFutureCandleMin {
     @Column(columnDefinition = "varchar(50) comment '등록ID'")
     private String regId;
 
-    // ---------------------------------------------------------------
+    // ------------------------------- ID getter, setter
     
-    public TbBnFutureCandleMin() {
-    	this.tbBinanceFutureCandleMinId = new TbBnFutureCandleMinId();
-    }
+    public TbBnFutureCandleMin() {	this.tbBinanceFutureCandleMinId = new TbBnFutureCandleMinId();  }
     
     
     public String getSymbol() {

@@ -50,16 +50,20 @@ public class ExchBnFutureCandleTasklet implements Tasklet {
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		
-		log.info(">>>>> start ExchBnFutureCandleTasklet");		
-		
-		List<TbBnFutureExchangeInfoEntry> lstEntry = tbBnFutureExchangeInfoEntryRepo.findAll();
-		Map<String, TbBnFutureExchangeInfoEntry> mapEntry = lstEntry.stream().collect(	
-		        Collectors.toMap(TbBnFutureExchangeInfoEntry::getSymbol, Function.identity()));	// Map ("BTCUSDT", TbBnFutureExchangeInfoEntry)
+		log.info(">>>>> start ExchBnFutureCandleTasklet");
 		
 		
-		for(TbBnFutureCandleMin cm : tbBnFutureCandleMinRepo.findMaxOpenTimeBySymbol()) {
-			
-		}
+		
+		
+		
+//		List<TbBnFutureExchangeInfoEntry> lstEntry = tbBnFutureExchangeInfoEntryRepo.findAll();
+//		Map<String, TbBnFutureExchangeInfoEntry> mapEntry = lstEntry.stream().collect(	
+//		        Collectors.toMap(TbBnFutureExchangeInfoEntry::getSymbol, Function.identity()));	// Map ("BTCUSDT", TbBnFutureExchangeInfoEntry)
+//		
+//		
+//		for(TbBnFutureCandleMin cm : tbBnFutureCandleMinRepo.findMaxOpenTimeBySymbol()) {
+//			
+//		}
 
 		
 		

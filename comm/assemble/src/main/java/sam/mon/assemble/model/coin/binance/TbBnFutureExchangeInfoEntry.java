@@ -19,6 +19,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.binance.client.model.market.ExchangeInfoEntry;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Exclude;
 import sam.mon.assemble.model.util.convert.BooleanToYNConverter;
 import sam.mon.assemble.model.util.convert.StringArrayConverter;
 
@@ -26,6 +28,7 @@ import sam.mon.assemble.model.util.convert.StringArrayConverter;
 @Entity
 @EntityListeners(AuditingEntityListener.class) // @CreatedDate, @LastModifiedDate
 @Table(name = "tb_bn_future_exchang_info_entry")
+@EqualsAndHashCode
 public class TbBnFutureExchangeInfoEntry implements Persistable<String> {
 	
     @Id    
@@ -65,22 +68,46 @@ public class TbBnFutureExchangeInfoEntry implements Persistable<String> {
 
     @Convert(converter = StringArrayConverter.class)
     @Column(columnDefinition = "varchar(255) comment '주문실행 계획'")
-    private List<String> timeInForce;
+    private List<String> timeInForce;    
+
+    // ---------------------------- @EqualsAndHashCode 사용시 Bigdecimal 예외처리
+    
+    @EqualsAndHashCode.Include
+    private BigDecimal bdEq1() {
+        return maintMarginPercent.stripTrailingZeros();    
+    }
+
+    @EqualsAndHashCode.Include
+    private BigDecimal bdEq2() {
+        return requiredMarginPercent.stripTrailingZeros();    
+    }
+    
     
     // ------------------------------ 비교 속성 제외
     
     @Convert(converter = BooleanToYNConverter.class)
+    @Column(columnDefinition = "char(1) comment '상장폐지 유무'")
+    @Exclude
+    private Boolean ListYn;
+    
+    @Convert(converter = BooleanToYNConverter.class)
     @Column(columnDefinition = "char(1) comment '가격 사용 가능 유무'")
+    @Exclude
     private Boolean priceUseYn;
 
     @Column(columnDefinition = "timestamp comment '등록일시'")
+    @Exclude
     @CreatedDate
     private Timestamp regDate;
     
     @Column(columnDefinition = "timestamp comment '수정일시'")
+    @Exclude
     @LastModifiedDate
     private Timestamp corrDate;
     
+    // ------------------------------ 영속성 관리를 위함
+
+    @Exclude
     private boolean persisNew;
     
 	@Override
@@ -96,23 +123,25 @@ public class TbBnFutureExchangeInfoEntry implements Persistable<String> {
 	public void setNew(boolean b) {
 		this.persisNew = b;
 	
-	}    	
-	
-	public boolean equalsApiVo(ExchangeInfoEntry eie) {
-		if(!this.symbol.equals(eie.getSymbol())) {return false; }
-		if(!this.status.equals(eie.getStatus())) {return false; }
-		if(this.maintMarginPercent.compareTo(eie.getMaintMarginPercent())!=0) {return false; }
-		if(this.requiredMarginPercent.compareTo(eie.getRequiredMarginPercent())!=0) {return false; }
-		if(!this.baseAsset.equals(eie.getBaseAsset())) {return false; }
-		if(this.baseAssetPrecision.compareTo(eie.getBaseAssetPrecision())!=0) {return false; }
-		if(!this.quoteAsset.equals(eie.getQuoteAsset())) {return false; }
-		if(this.pricePrecision.compareTo(eie.getPricePrecision())!=0) {return false; }
-		if(this.quantityPrecision.compareTo(eie.getQuantityPrecision())!=0) {return false; }
-		if(this.onboardDate.compareTo(new Timestamp(eie.getOnboardDate()))!=0) {return false; }
-		if(!this.orderTypes.toString().equals(eie.getOrderTypes().toString())) {return false; }
-		if(!this.timeInForce.toString().equals(eie.getTimeInForce().toString())) {return false; }
-		
-		return true;
 	}
+	
+	// -------------------------------
 
+	public TbBnFutureExchangeInfoEntry() {}
+	public TbBnFutureExchangeInfoEntry(ExchangeInfoEntry exchangeInfoEntry) {
+		this.symbol = exchangeInfoEntry.getSymbol();
+		this.status = exchangeInfoEntry.getStatus();
+		this.maintMarginPercent = exchangeInfoEntry.getMaintMarginPercent();
+		this.requiredMarginPercent = exchangeInfoEntry.getRequiredMarginPercent();
+		this.baseAsset = exchangeInfoEntry.getBaseAsset();
+		this.baseAssetPrecision = exchangeInfoEntry.getBaseAssetPrecision();
+		this.quoteAsset = exchangeInfoEntry.getQuoteAsset();
+		this.pricePrecision = exchangeInfoEntry.getPricePrecision();
+		this.quantityPrecision = exchangeInfoEntry.getQuantityPrecision();
+		this.onboardDate = new Timestamp(exchangeInfoEntry.getOnboardDate());
+		this.orderTypes = exchangeInfoEntry.getOrderTypes();
+		this.timeInForce = exchangeInfoEntry.getTimeInForce();		
+	}
+	
+	
 }

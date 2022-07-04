@@ -12,6 +12,6 @@ public class GetCandlestick {
         RequestOptions options = new RequestOptions();
         SyncRequestClient syncRequestClient = SyncRequestClient.create(PrivateConfig.API_KEY, PrivateConfig.SECRET_KEY,
                 options);
-        System.out.println(syncRequestClient.getCandlestick("BTCUSDT", CandlestickInterval.ONE_MINUTE, null, null, 5));
+        System.out.println(syncRequestClient.getCandlestick("TLMUSDT", CandlestickInterval.ONE_MINUTE, null, null, 100));
     }
 }

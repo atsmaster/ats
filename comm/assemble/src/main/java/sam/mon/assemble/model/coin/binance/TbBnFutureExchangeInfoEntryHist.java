@@ -16,7 +16,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import lombok.Builder;
 import lombok.Data;
 import sam.mon.assemble.model.util.convert.StringArrayConverter;
 
@@ -96,4 +95,28 @@ public class TbBnFutureExchangeInfoEntryHist implements Persistable<TbBnFutureEx
 	
 	}    
 
+	// ------------------------------- ID getter, setter 
+	
+
+    public TbBnFutureExchangeInfoEntryHist() {	this.tbBnFutureExchangeInfoEntryHistId = new TbBnFutureExchangeInfoEntryHistId();  }
+    
+    
+    public String getSymbol() {
+    	return tbBnFutureExchangeInfoEntryHistId.getSymbol();
+    }
+    
+    public void setSymbol(String symbol) {
+    	tbBnFutureExchangeInfoEntryHistId.setSymbol(symbol);
+    }
+    
+    public Timestamp getSymbolInfoChgDate() {
+    	return tbBnFutureExchangeInfoEntryHistId.getSymbolInfoChgDate();
+    }
+
+    
+    public void setSymbolInfoChgDate(Timestamp symbolInfoChgDate) {
+    	tbBnFutureExchangeInfoEntryHistId.setSymbolInfoChgDate(symbolInfoChgDate);;
+    }
+    
+	
 }
