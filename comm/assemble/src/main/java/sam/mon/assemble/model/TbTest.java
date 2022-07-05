@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Exclude;
 
 @Data
 @Entity
@@ -31,5 +32,8 @@ public class TbTest {
     private BigDecimal tbTestBdForEq() {
         return tbTestBd.stripTrailingZeros();    
     }
+    
+    @Exclude
+    private String exclueField;
 	
 }

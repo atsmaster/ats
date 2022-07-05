@@ -19,10 +19,10 @@ public class TbBnFutureExchangeInfoEntryHistId implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Column(columnDefinition = "varchar(50) not null comment '종목명'")
+	@Column(columnDefinition = "varchar(50) comment '종목명'")
 	private String symbol;
 
-	@Column(columnDefinition = "timestamp not null comment '종목 정보 변경 일시'")
-    @CreatedDate
+	@CreatedDate
+	@Column(columnDefinition = "timestamp comment '종목 정보 변경 일시'")    
 	private Timestamp symbolInfoChgDate;
 }

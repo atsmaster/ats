@@ -17,10 +17,10 @@ public class TbBnFutureCandleMinId implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Column(columnDefinition = "varchar(50) not null comment '종목명'")
+	@Column(columnDefinition = "varchar(50) comment '종목명'")
 	private String symbol;
 	
-	@Column(columnDefinition = "timestamp not null comment '시작일시'")
+	@Column(columnDefinition = "timestamp comment '시작일시'")
 	private Timestamp timeOpen; // jpa 복합키는 알파벳 순서로 생성되기 때문에 symbol 보다 늦은순서인 timeopen으로 수정
 	
 	

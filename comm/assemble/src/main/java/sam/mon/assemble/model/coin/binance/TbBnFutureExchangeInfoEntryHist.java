@@ -17,11 +17,12 @@ import org.springframework.data.domain.Persistable;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.Data;
+import sam.mon.assemble.model.util.convert.BooleanToYNConverter;
 import sam.mon.assemble.model.util.convert.StringArrayConverter;
 
 @Data
-@Entity
-@EntityListeners(AuditingEntityListener.class) 
+@Entity 
+@EntityListeners(AuditingEntityListener.class) // @CreatedDate, @LastModifiedDate
 @Table(name = "tb_bn_future_exchang_info_entry_hist")
 public class TbBnFutureExchangeInfoEntryHist implements Persistable<TbBnFutureExchangeInfoEntryHistId> {
 	
@@ -63,11 +64,15 @@ public class TbBnFutureExchangeInfoEntryHist implements Persistable<TbBnFutureEx
     @Column(columnDefinition = "varchar(255) comment '주문실행 계획'")
     private List<String> timeInForce;    
 
-    // ------------------------------ 비교 속성 제외
+    // ------------------------------ 비교 속성 제외 (이하)
     
 //    @Convert(converter = BooleanToYNConverter.class)
 //    @Column(columnDefinition = "char(1) comment '가격 사용 가능 유무'")
 //    private Boolean priceUseYn;
+    
+    @Convert(converter = BooleanToYNConverter.class)
+    @Column(columnDefinition = "char(1) comment '상장폐지 유무'")
+    private Boolean ListYn;
 
     @Column(columnDefinition = "timestamp comment '등록일시'")
     @CreatedDate
@@ -77,6 +82,8 @@ public class TbBnFutureExchangeInfoEntryHist implements Persistable<TbBnFutureEx
     @LastModifiedDate
     private Timestamp corrDate;
     
+
+    // ------------------------------ 영속성 관리를 위함
 
     private boolean persisNew;
     
@@ -96,9 +103,6 @@ public class TbBnFutureExchangeInfoEntryHist implements Persistable<TbBnFutureEx
 	}    
 
 	// ------------------------------- ID getter, setter 
-	
-
-    public TbBnFutureExchangeInfoEntryHist() {	this.tbBnFutureExchangeInfoEntryHistId = new TbBnFutureExchangeInfoEntryHistId();  }
     
     
     public String getSymbol() {
@@ -118,5 +122,26 @@ public class TbBnFutureExchangeInfoEntryHist implements Persistable<TbBnFutureEx
     	tbBnFutureExchangeInfoEntryHistId.setSymbolInfoChgDate(symbolInfoChgDate);;
     }
     
+    // ----------------------------------- 생성자
+
+	public TbBnFutureExchangeInfoEntryHist() {tbBnFutureExchangeInfoEntryHistId = new TbBnFutureExchangeInfoEntryHistId();}
+	
+	public TbBnFutureExchangeInfoEntryHist(TbBnFutureExchangeInfoEntry tbBnFutureExchangeInfoEntry) {
+		tbBnFutureExchangeInfoEntryHistId = new TbBnFutureExchangeInfoEntryHistId();		
+		this.tbBnFutureExchangeInfoEntryHistId.setSymbol(tbBnFutureExchangeInfoEntry.getSymbol());
+		this.tbBnFutureExchangeInfoEntryHistId.setSymbolInfoChgDate(null);
+		this.status = tbBnFutureExchangeInfoEntry.getStatus();
+		this.maintMarginPercent = tbBnFutureExchangeInfoEntry.getMaintMarginPercent();
+		this.requiredMarginPercent = tbBnFutureExchangeInfoEntry.getRequiredMarginPercent();
+		this.baseAsset = tbBnFutureExchangeInfoEntry.getBaseAsset();
+		this.baseAssetPrecision = tbBnFutureExchangeInfoEntry.getBaseAssetPrecision();
+		this.quoteAsset = tbBnFutureExchangeInfoEntry.getQuoteAsset();
+		this.pricePrecision = tbBnFutureExchangeInfoEntry.getPricePrecision();
+		this.quantityPrecision = tbBnFutureExchangeInfoEntry.getQuantityPrecision();
+		this.onboardDate = tbBnFutureExchangeInfoEntry.getOnboardDate();
+		this.orderTypes = tbBnFutureExchangeInfoEntry.getOrderTypes();
+		this.timeInForce = tbBnFutureExchangeInfoEntry.getTimeInForce();		
+	}
+	
 	
 }

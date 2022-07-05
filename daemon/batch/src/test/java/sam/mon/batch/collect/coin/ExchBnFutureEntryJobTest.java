@@ -15,7 +15,9 @@ import org.springframework.batch.test.JobRepositoryTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -31,6 +33,9 @@ import sam.mon.batch.collect.coin.task.ExchBnFutureEntryTasklet;
 		, TbBnFutureExchangeInfoEntryRepo.class, TbBnFutureExchangeInfoEntryHistRepo.class})
 @EntityScan(basePackages = {"sam.mon.batch", "sam.mon.assemble"})
 @EnableJpaRepositories(basePackages = {"sam.mon.batch", "sam.mon.assemble"})
+
+//@DataJpaTest
+@EnableJpaAuditing
 public class ExchBnFutureEntryJobTest {
 
 	@Autowired

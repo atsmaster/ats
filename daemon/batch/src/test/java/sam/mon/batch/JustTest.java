@@ -18,10 +18,12 @@ public class JustTest {
 	@Test
 	public void testSum(){
 		TbTest tt = new TbTest();
-		tt.setTbTestBd(new BigDecimal("1.0"));
+		tt.setTbTestBd(new BigDecimal("1.01"));
+		tt.setExclueField("1");
 		
 		TbTest tt2 = new TbTest();
 		tt2.setTbTestBd(new BigDecimal("1.00"));
+		tt2.setExclueField("2");
 		
 		
 		System.out.println(tt.equals(tt2)); 

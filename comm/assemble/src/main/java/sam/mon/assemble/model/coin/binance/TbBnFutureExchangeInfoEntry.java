@@ -26,22 +26,24 @@ import sam.mon.assemble.model.util.convert.StringArrayConverter;
 
 @Data
 @Entity
-@EntityListeners(AuditingEntityListener.class) // @CreatedDate, @LastModifiedDate
 @Table(name = "tb_bn_future_exchang_info_entry")
 @EqualsAndHashCode
+@EntityListeners(AuditingEntityListener.class) // @CreatedDate, @LastModifiedDate
 public class TbBnFutureExchangeInfoEntry implements Persistable<String> {
 	
     @Id    
-    @Column(columnDefinition = "varchar(50) not null comment '종목명'")
+    @Column(columnDefinition = "varchar(50) comment '종목명'")
     private String symbol;
     
     @Column(columnDefinition = "varchar(50) comment '거래상태'")
     private String status;
 
     @Column(columnDefinition = "decimal(7,4) comment '유지 증거금률(%)'")
+	@EqualsAndHashCode.Exclude
     private BigDecimal maintMarginPercent;
 
     @Column(columnDefinition = "decimal(7,4) comment '요구 증거금률(%)'")
+	@EqualsAndHashCode.Exclude
     private BigDecimal requiredMarginPercent;
 
     @Column(columnDefinition = "varchar(50) comment '기초자산'")
@@ -80,10 +82,9 @@ public class TbBnFutureExchangeInfoEntry implements Persistable<String> {
     @EqualsAndHashCode.Include
     private BigDecimal bdEq2() {
         return requiredMarginPercent.stripTrailingZeros();    
-    }
+    }    
     
-    
-    // ------------------------------ 비교 속성 제외
+    // ------------------------------ 비교 속성 제외 (이하)
     
     @Convert(converter = BooleanToYNConverter.class)
     @Column(columnDefinition = "char(1) comment '상장폐지 유무'")
@@ -121,8 +122,7 @@ public class TbBnFutureExchangeInfoEntry implements Persistable<String> {
 	}    
 	
 	public void setNew(boolean b) {
-		this.persisNew = b;
-	
+		this.persisNew = b;	
 	}
 	
 	// -------------------------------
