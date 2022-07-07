@@ -19,14 +19,7 @@
 			<groupId>sam.mon</groupId>
 			<artifactId>assemble</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>sam.mon</groupId>
-			<artifactId>binance-client</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-	
+		</dependency>	
 	
 		<!-- batch -->
 		<dependency>
@@ -52,6 +45,12 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>			
+			<version>2.6</version>
 		</dependency>
 
 		<!-- class 파일로 configuration 하기 위한 라이브러리 -->

@@ -6,7 +6,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
  * Constants used throughout Binance's API.
  */
 public class BinanceApiConstants {
-
+	
     /**
      * REST API base URL.
      */
@@ -47,6 +47,9 @@ public class BinanceApiConstants {
     public static ToStringStyle TO_STRING_BUILDER_STYLE = ToStringStyle.SHORT_PREFIX_STYLE;
     
 
-    public static final String API_KEY = "By0063HF3ZcKIuwOUmVHW4p3Ttyo1bhAjlRkL7dVMfSwpjqiqcJYk135RHThd33G";
-    public static final String SECRET_KEY = "wT0xsQOQ1QPRKULR1ci3lWgDqtOLxUDQszDStkFWAIsq1EYYJcr8CAqaMDIoUh8s";
+    public static final String API_KEY = "XXX";
+    public static final String SECRET_KEY = "XXX";
+    
+
+	
 }

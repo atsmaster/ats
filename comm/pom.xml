@@ -18,5 +18,6 @@
 	<modules>
 		<module>binance-client</module>
 		<module>assemble</module>
+		<module>utils</module>
 	</modules>
 </project>

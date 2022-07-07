@@ -15,12 +15,14 @@ import org.springframework.batch.test.JobRepositoryTestUtils;
 import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import sam.mon.assemble.api.coin.binance.BnFutureApi;
+import sam.mon.assemble.api.coin.binance.impl.ApiRequestImpl;
 import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryHistRepo;
 import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryRepo;
 import sam.mon.batch.TestBatchConfig;
@@ -30,7 +32,7 @@ import sam.mon.batch.collect.coin.task.ExchBnFutureEntryTasklet;
 @RunWith(SpringRunner.class)
 @SpringBatchTest
 @SpringBootTest(classes = { TestBatchConfig.class, ExchBnFutureEntryJobConfig.class, ExchBnFutureEntryTasklet.class
-		, TbBnFutureExchangeInfoEntryRepo.class, TbBnFutureExchangeInfoEntryHistRepo.class})
+		, TbBnFutureExchangeInfoEntryRepo.class, TbBnFutureExchangeInfoEntryHistRepo.class, ApiRequestImpl.class, BnFutureApi.class})
 @EntityScan(basePackages = {"sam.mon.batch", "sam.mon.assemble"})
 @EnableJpaRepositories(basePackages = {"sam.mon.batch", "sam.mon.assemble"})
 
