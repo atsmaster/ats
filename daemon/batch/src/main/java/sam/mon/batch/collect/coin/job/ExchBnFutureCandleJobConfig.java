@@ -42,8 +42,7 @@ public class ExchBnFutureCandleJobConfig {
 	public Step exchBnFutureEntryStep(@Value("#{jobParameters[requestDate]}") String requestDate) {
 		log.info(">>>>> This is exchBnFutureEntryStep");
 		return stepBuilderFactory
-				.get("sampleStep")
-				.tasklet(exchBnFutureEntryTasklet)
+				.get("exchBnFutureEntryStep")
 				.tasklet(exchBnFutureEntryTasklet).build();
     }
 

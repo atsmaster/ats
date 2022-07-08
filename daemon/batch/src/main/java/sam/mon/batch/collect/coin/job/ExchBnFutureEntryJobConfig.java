@@ -17,20 +17,16 @@ import sam.mon.batch.collect.coin.task.ExchBnFutureEntryTasklet;
 @RequiredArgsConstructor
 @Configuration
 public class ExchBnFutureEntryJobConfig {
-
-    public static final String JOB_NAME = "exchBnFutureEntryJob";
 	
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
     private final ExchBnFutureEntryTasklet exchBnFutureEntryTasklet;
 
-
-    
     @Bean
     public Job exchBnFutureEntryJob() {
     	log.info(">>>>> start exchBnFutureEntryJob");
-        return jobBuilderFactory.get(JOB_NAME)
+        return jobBuilderFactory.get("exchBnFutureEntryJob")
         		.preventRestart()
                 .start(exchBnFutureEntryStep(null))
 //                .next(datalabWriteStep(null))
