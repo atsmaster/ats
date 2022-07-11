@@ -71,25 +71,23 @@ public class TbBnFutureExchangeInfoEntry implements Persistable<String> {
     @Convert(converter = StringArrayConverter.class)
     @Column(columnDefinition = "varchar(255) comment '주문실행 계획'")
     private List<String> timeInForce;    
-
-    // ---------------------------- @EqualsAndHashCode 사용시 Bigdecimal 예외처리
     
     @EqualsAndHashCode.Include
-    private BigDecimal bdEq1() {
+    private BigDecimal bdEq1() { // @EqualsAndHashCode 사용시 Bigdecimal 예외처리
         return maintMarginPercent.stripTrailingZeros();    
     }
 
     @EqualsAndHashCode.Include
-    private BigDecimal bdEq2() {
+    private BigDecimal bdEq2() { // @EqualsAndHashCode 사용시 Bigdecimal 예외처리
         return requiredMarginPercent.stripTrailingZeros();    
     }    
     
     // ------------------------------ 비교 속성 제외 (이하)
     
     @Convert(converter = BooleanToYNConverter.class)
-    @Column(columnDefinition = "char(1) comment '상장폐지 유무'")
+    @Column(columnDefinition = "char(1) comment '거래소 상장 유무'")
     @Exclude
-    private Boolean ListYn;
+    private Boolean listYn;
     
     @Convert(converter = BooleanToYNConverter.class)
     @Column(columnDefinition = "char(1) comment '가격 사용 가능 유무'")

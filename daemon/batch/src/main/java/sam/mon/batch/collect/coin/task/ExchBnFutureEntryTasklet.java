@@ -56,7 +56,7 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 
 
 		// 시스템에 저장된 Db Entry 
-		List<TbBnFutureExchangeInfoEntry> lstDbEntry = tbBnFutureExchangeInfoEntryRepo.findAll();		
+		List<TbBnFutureExchangeInfoEntry> lstDbEntry = tbBnFutureExchangeInfoEntryRepo.findByListYn(true);
 		Map<String, TbBnFutureExchangeInfoEntry> mapDbEntry = lstDbEntry.stream().collect(	
 		        Collectors.toMap(TbBnFutureExchangeInfoEntry::getSymbol, Function.identity()));	// Map ("BTCUSDT", TbBnFutureExchangeInfoEntry)
 		
@@ -79,7 +79,7 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 		/**
 		 * 비교시작
 		 * 1. db, res 합집합군 처리	(변경된 정보 업데이트)
-		 * 2. db  여집합군 처리		(신규 상장)
+		 * 2. db  여집합군 처리		(신규 상장 및 재상장)
 		 * 3. res 여집합군 처리		(상장 폐지)
 		 * 
 		 * */		
@@ -98,19 +98,16 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 					resEntryHist.setListYn(true);
 					lstNewEntryHist.add(resEntryHist);					
 				}
-				
-			}else { // 2. db  여집합군 처리 (신규 상장)			
-				
+					
+			}else { // 2. db  여집합군 처리 (신규 상장 및 재상장)				
 				// TbBnFutureExchangeInfoEntry
 				resEntry.setListYn(true);
 				resEntry.setPriceUseYn(false);
-				resEntry.setNew(true);
 				lstNewEntry.add(resEntry);
 				
 				//TbBnFutureExchangeInfoEntryHist
 				TbBnFutureExchangeInfoEntryHist resEntryHist = new TbBnFutureExchangeInfoEntryHist(resEntry);
 				resEntryHist.setListYn(true);
-				resEntryHist.setNew(true);
 				lstNewEntryHist.add(resEntryHist);
 			}
 		}

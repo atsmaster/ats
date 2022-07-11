@@ -1,4 +1,4 @@
-package sam.mon.assemble.model;
+package sam.mon.assemble.model.enums;
 
 import com.binance.client.model.enums.CandlestickInterval;
 

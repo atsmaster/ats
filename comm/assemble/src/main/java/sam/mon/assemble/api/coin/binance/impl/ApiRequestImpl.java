@@ -11,10 +11,10 @@ import com.binance.client.model.market.ExchangeInfoEntry;
 
 import sam.mon.assemble.api.coin.binance.ApiRequest;
 import sam.mon.assemble.api.coin.binance.BnFutureApi;
-import sam.mon.assemble.model.CandleInterval;
 import sam.mon.assemble.model.coin.binance.TbBnFutureCandle;
 import sam.mon.assemble.model.coin.binance.TbBnFutureCandleMin;
 import sam.mon.assemble.model.coin.binance.TbBnFutureExchangeInfoEntry;
+import sam.mon.assemble.model.enums.CandleInterval;
 
 @Component
 public class ApiRequestImpl implements ApiRequest{

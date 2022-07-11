@@ -1,9 +1,6 @@
 
 package sam.mon.batch.collect.coin.task;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -16,12 +13,10 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import sam.mon.assemble.api.coin.binance.impl.ApiRequestImpl;
-import sam.mon.assemble.model.CandleInterval;
-import sam.mon.assemble.model.coin.binance.TbBnFutureCandle;
-import sam.mon.assemble.model.coin.binance.TbBnFutureExchangeInfoEntry;
 import sam.mon.assemble.repo.coin.binance.TbBnFutureCandleMinRepo;
 import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryHistRepo;
 import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryRepo;
+
 
 @Slf4j
 @Component
@@ -51,20 +46,31 @@ public class ExchBnFutureCandleTasklet implements Tasklet {
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		
 		log.info(">>>>> start ExchBnFutureCandleTasklet");
+		
+		List<Object> lstSymbolAndStrtTime = tbBnFutureCandleMinRepo.findAllMaxOpenTime();
+		
+		
+		
+		
+		
+		
+		
+        
+        
+//		 tbBnFutureCandleMinRepo.findAllMaxOpenTime();
 
+//		// 시스템에 저장된 Db Entry 
+//		for(TbBnFutureExchangeInfoEntry ei : tbBnFutureExchangeInfoEntryRepo) {
+//			
+//			tbBnFutureExchangeInfoEntryRepo.findMaxOpenTimeBySymbol()
+//		}
+		
+		
+//		List<TbBnFutureCandle> lstResEntry = apiRequestImpl.getCandle(ei.getSymbol(), CandleInterval.ONE_MINUTE, 1657260000000L, 1657261000000L, 100);
 
-		// 시스템에 저장된 Db Entry 
-		List<TbBnFutureExchangeInfoEntry> lstDbEntry = tbBnFutureExchangeInfoEntryRepo.findAll();		
-		Map<String, TbBnFutureExchangeInfoEntry> mapDbEntry = lstDbEntry.stream().collect(	
-		        Collectors.toMap(TbBnFutureExchangeInfoEntry::getSymbol, Function.identity()));	// Map ("BTCUSDT", TbBnFutureExchangeInfoEntry)
 		
 		
-		TbBnFutureExchangeInfoEntry ei = mapDbEntry.get("BTCUSDT");
-
-		List<TbBnFutureCandle> lstResEntry = apiRequestImpl.getCandle(ei.getSymbol(), CandleInterval.ONE_MINUTE, 1657260000000L, 1657261000000L, 100);
 		
-		
-		System.out.println("asdsadoksa");
 //		List<TbBnFutureExchangeInfoEntry> lstEntry = tbBnFutureExchangeInfoEntryRepo.findAll();
 //		Map<String, TbBnFutureExchangeInfoEntry> mapEntry = lstEntry.stream().collect(	
 //		        Collectors.toMap(TbBnFutureExchangeInfoEntry::getSymbol, Function.identity()));	// Map ("BTCUSDT", TbBnFutureExchangeInfoEntry)
