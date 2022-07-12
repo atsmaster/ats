@@ -13,9 +13,9 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import sam.mon.assemble.api.coin.binance.impl.ApiRequestImpl;
+import sam.mon.assemble.model.coin.binance.TbBnFutureCandle;
+import sam.mon.assemble.model.enums.CandleInterval;
 import sam.mon.assemble.repo.coin.binance.TbBnFutureCandleMinRepo;
-import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryHistRepo;
-import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryRepo;
 
 
 @Slf4j
@@ -24,17 +24,11 @@ import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryRepo;
 public class ExchBnFutureCandleTasklet implements Tasklet {
 
 	@Autowired
-	TbBnFutureExchangeInfoEntryRepo tbBnFutureExchangeInfoEntryRepo;
-	
-	@Autowired
-	TbBnFutureExchangeInfoEntryHistRepo tbBnFutureExchangeInfoEntryHistRepo;
-	
-	@Autowired
 	TbBnFutureCandleMinRepo tbBnFutureCandleMinRepo;
 
 	@Autowired
 	ApiRequestImpl apiRequestImpl;
-	
+
 	
 	@Value("${ats.daemon.batch.regid}")
 	private String regId;
@@ -45,19 +39,11 @@ public class ExchBnFutureCandleTasklet implements Tasklet {
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		
-		log.info(">>>>> start ExchBnFutureCandleTasklet");
-		
-		List<Object> lstSymbolAndStrtTime = tbBnFutureCandleMinRepo.findAllMaxOpenTime();
-		
-		
-		
-		
-		
-		
-		
+
+		List<TbBnFutureCandle> lstResEntry = apiRequestImpl.getCandle("BTCUSDT", CandleInterval.ONE_MINUTE, null, null, 10);
+	
         
-        
-//		 tbBnFutureCandleMinRepo.findAllMaxOpenTime();
+//		 List<String> aaa = tbBnFutureCandleMinRepo.findAllMaxOpenTime();
 
 //		// 시스템에 저장된 Db Entry 
 //		for(TbBnFutureExchangeInfoEntry ei : tbBnFutureExchangeInfoEntryRepo) {

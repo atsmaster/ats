@@ -28,9 +28,8 @@ public interface TbBnFutureCandleMinRepo extends JpaRepository<TbBnFutureCandleM
 //	@Query(value = "SELECT ie FROM tb_bn_future_exchang_info_entry ie "
 //			+ "JOIN FETCH ie.(SELECT cm.symbol AS symbol, MAX(cm.time_open) AS time_open FROM tb_bn_future_candle_min cm GROUP BY cm.symbol)"
 //			,nativeQuery = true)
-	@Query(value = "SELECT ie FROM tb_bn_future_exchang_info_entry ie "
-			+ "JOIN FETCH ie.tb_bn_future_candle_min"
-			,nativeQuery = true)
-	 List<Object> findAllMaxOpenTime();
+
+	@Query(value = "SELECT cm.symbol as symbol, max(cm.time_open) as maxTimeOpen FROM tb_bn_future_candle_min cm GROUP BY cm.symbol", nativeQuery = true)
+	List<String> findAllMaxOpenTime();
 
 }

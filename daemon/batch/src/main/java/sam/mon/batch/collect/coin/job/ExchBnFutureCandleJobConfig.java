@@ -22,7 +22,6 @@ public class ExchBnFutureCandleJobConfig {
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
 
-    private final ExchBnFutureEntryTasklet exchBnFutureEntryTasklet;
     private final ExchBnFutureCandleTasklet exchBnFutureCandleTasklet;
     
     
@@ -31,19 +30,8 @@ public class ExchBnFutureCandleJobConfig {
     	log.info(">>>>> start exchBnFutureCandleJob");
         return jobBuilderFactory.get("exchBnFutureCandleJob")
         		.preventRestart()
-                .start(exchBnFutureEntryStep(null))
-                .next(exchBnFutureCandleStep(null))
+                .start(exchBnFutureCandleStep(null))
                 .build();
-    }
-
-
-    @Bean
-	@JobScope
-	public Step exchBnFutureEntryStep(@Value("#{jobParameters[requestDate]}") String requestDate) {
-		log.info(">>>>> This is exchBnFutureEntryStep");
-		return stepBuilderFactory
-				.get("exchBnFutureEntryStep")
-				.tasklet(exchBnFutureEntryTasklet).build();
     }
 
     @Bean
