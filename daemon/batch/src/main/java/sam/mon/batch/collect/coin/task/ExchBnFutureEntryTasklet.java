@@ -122,7 +122,6 @@ public class ExchBnFutureEntryTasklet implements Tasklet {
 				//TbBnFutureExchangeInfoEntryHist
 				TbBnFutureExchangeInfoEntryHist dbEntryHist = new TbBnFutureExchangeInfoEntryHist(dbEntry);
 				dbEntryHist.setListYn(true);
-				dbEntryHist.setNew(true);
 				lstNewEntryHist.add(dbEntryHist);
 			}
 		}		

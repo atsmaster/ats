@@ -6,9 +6,10 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -24,10 +25,19 @@ import sam.mon.assemble.model.util.convert.StringArrayConverter;
 @Entity 
 @EntityListeners(AuditingEntityListener.class) // @CreatedDate, @LastModifiedDate
 @Table(name = "tb_bn_future_exchang_info_entry_hist")
+@IdClass(TbBnFutureExchangeInfoEntryHistId.class)
 public class TbBnFutureExchangeInfoEntryHist implements Persistable<TbBnFutureExchangeInfoEntryHistId> {
 	
-    @EmbeddedId    		
-    TbBnFutureExchangeInfoEntryHistId tbBnFutureExchangeInfoEntryHistId;	
+//    @EmbeddedId    		
+//    TbBnFutureExchangeInfoEntryHistId tbBnFutureExchangeInfoEntryHistId;	
+	@Id
+	@Column(columnDefinition = "varchar(50) comment '종목명'")
+	private String symbol;
+
+	@Id
+	@CreatedDate
+	@Column(columnDefinition = "timestamp comment '종목 정보 변경 일시'")    
+	private Timestamp symbolInfoChgDate;
 	
     @Column(columnDefinition = "varchar(50) comment '거래상태'")
     private String status;
@@ -84,52 +94,30 @@ public class TbBnFutureExchangeInfoEntryHist implements Persistable<TbBnFutureEx
     
 
     // ------------------------------ 영속성 관리를 위함
-
-    private boolean persisNew;
-    
-	@Override
-	public TbBnFutureExchangeInfoEntryHistId getId() {
-		return tbBnFutureExchangeInfoEntryHistId;
-	}
-
 	@Override
 	public boolean isNew() {
-		return persisNew;
-	}    
+		return true;
+	}
 	
-	public void setNew(boolean b) {
-		this.persisNew = b;
+	@Override
+	public TbBnFutureExchangeInfoEntryHistId getId() {
+		return TbBnFutureExchangeInfoEntryHistId.builder()
+				.symbol(symbol)
+				.symbolInfoChgDate(symbolInfoChgDate)
+				.build();
+	}	
 	
-	}    
-
-	// ------------------------------- ID getter, setter 
-    
-    
-    public String getSymbol() {
-    	return tbBnFutureExchangeInfoEntryHistId.getSymbol();
-    }
-    
-    public void setSymbol(String symbol) {
-    	tbBnFutureExchangeInfoEntryHistId.setSymbol(symbol);
-    }
-    
-    public Timestamp getSymbolInfoChgDate() {
-    	return tbBnFutureExchangeInfoEntryHistId.getSymbolInfoChgDate();
-    }
-
-    
-    public void setSymbolInfoChgDate(Timestamp symbolInfoChgDate) {
-    	tbBnFutureExchangeInfoEntryHistId.setSymbolInfoChgDate(symbolInfoChgDate);;
-    }
-    
     // ----------------------------------- 생성자
 
-	public TbBnFutureExchangeInfoEntryHist() {tbBnFutureExchangeInfoEntryHistId = new TbBnFutureExchangeInfoEntryHistId();}
+	public TbBnFutureExchangeInfoEntryHist() { }
 	
 	public TbBnFutureExchangeInfoEntryHist(TbBnFutureExchangeInfoEntry tbBnFutureExchangeInfoEntry) {
-		tbBnFutureExchangeInfoEntryHistId = new TbBnFutureExchangeInfoEntryHistId();		
-		this.tbBnFutureExchangeInfoEntryHistId.setSymbol(tbBnFutureExchangeInfoEntry.getSymbol());
-		this.tbBnFutureExchangeInfoEntryHistId.setSymbolInfoChgDate(null);
+//		tbBnFutureExchangeInfoEntryHistId = new TbBnFutureExchangeInfoEntryHistId();		
+//		this.tbBnFutureExchangeInfoEntryHistId.setSymbol(tbBnFutureExchangeInfoEntry.getSymbol());
+//		this.tbBnFutureExchangeInfoEntryHistId.setSymbolInfoChgDate(null);
+		
+		this.symbol = tbBnFutureExchangeInfoEntry.getSymbol();
+//		this.symbolInfoChgDate;
 		this.status = tbBnFutureExchangeInfoEntry.getStatus();
 		this.maintMarginPercent = tbBnFutureExchangeInfoEntry.getMaintMarginPercent();
 		this.requiredMarginPercent = tbBnFutureExchangeInfoEntry.getRequiredMarginPercent();
@@ -142,6 +130,7 @@ public class TbBnFutureExchangeInfoEntryHist implements Persistable<TbBnFutureEx
 		this.orderTypes = tbBnFutureExchangeInfoEntry.getOrderTypes();
 		this.timeInForce = tbBnFutureExchangeInfoEntry.getTimeInForce();		
 	}
-	
+
+
 	
 }

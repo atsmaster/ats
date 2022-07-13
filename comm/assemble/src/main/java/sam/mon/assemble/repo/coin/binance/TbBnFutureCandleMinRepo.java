@@ -6,12 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import sam.mon.assemble.model.coin.binance.TbBnFutureCandleMin;
-import sam.mon.assemble.model.coin.binance.TbBnFutureCandleMinId;
+import sam.mon.assemble.model.coin.binance.TbBnFutureCandleOneMin;
+import sam.mon.assemble.model.coin.binance.TbBnFutureCandleId;
 
 
 @Repository
-public interface TbBnFutureCandleMinRepo extends JpaRepository<TbBnFutureCandleMin, TbBnFutureCandleMinId>{
+public interface TbBnFutureCandleMinRepo extends JpaRepository<TbBnFutureCandleOneMin, TbBnFutureCandleId>{
 	
 //	 @Query(value = "SELECT ie.symbol as symbol"
 //	 		+ "     , IF(cm.time_open IS NOT NULL, cm.time_open, ie.onboard_date) AS time_open"

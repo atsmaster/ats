@@ -140,6 +140,4 @@ public class TbBnFutureExchangeInfoEntry implements Persistable<String> {
 		this.orderTypes = exchangeInfoEntry.getOrderTypes();
 		this.timeInForce = exchangeInfoEntry.getTimeInForce();		
 	}
-	
-	
 }

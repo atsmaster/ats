@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import sam.mon.assemble.api.coin.binance.impl.ApiRequestImpl;
-import sam.mon.assemble.model.coin.binance.TbBnFutureCandle;
+import sam.mon.assemble.model.coin.binance.TbBnFutureCandleOneMin;
 import sam.mon.assemble.model.enums.CandleInterval;
 import sam.mon.assemble.repo.coin.binance.TbBnFutureCandleMinRepo;
 
@@ -39,8 +39,12 @@ public class ExchBnFutureCandleTasklet implements Tasklet {
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		
+		log.info("ho");
 
-		List<TbBnFutureCandle> lstResEntry = apiRequestImpl.getCandle("BTCUSDT", CandleInterval.ONE_MINUTE, null, null, 10);
+		List<TbBnFutureCandleOneMin> lstResEntry = apiRequestImpl.getCandle("BTCUSDT", CandleInterval.ONE_MINUTE, null, null, 1500);
+		
+
+		log.info("hi");
 	
         
 //		 List<String> aaa = tbBnFutureCandleMinRepo.findAllMaxOpenTime();

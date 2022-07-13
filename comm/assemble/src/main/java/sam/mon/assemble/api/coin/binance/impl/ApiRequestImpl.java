@@ -11,8 +11,7 @@ import com.binance.client.model.market.ExchangeInfoEntry;
 
 import sam.mon.assemble.api.coin.binance.ApiRequest;
 import sam.mon.assemble.api.coin.binance.BnFutureApi;
-import sam.mon.assemble.model.coin.binance.TbBnFutureCandle;
-import sam.mon.assemble.model.coin.binance.TbBnFutureCandleMin;
+import sam.mon.assemble.model.coin.binance.TbBnFutureCandleOneMin;
 import sam.mon.assemble.model.coin.binance.TbBnFutureExchangeInfoEntry;
 import sam.mon.assemble.model.enums.CandleInterval;
 
@@ -32,13 +31,10 @@ public class ApiRequestImpl implements ApiRequest{
 	}
 
 	@Override
-	public List<TbBnFutureCandle> getCandle(String symbol, CandleInterval interval, Long startTime, Long endTime, Integer limit) {
-//		List<TbBnFutureCandleMinn> lstResCandle = new ArrayList<TbBnFutureCandleMinn>();
-		
-		
-		List<TbBnFutureCandle> lstResCandle = new ArrayList<TbBnFutureCandle>(); 
+	public List<TbBnFutureCandleOneMin> getCandle(String symbol, CandleInterval interval, Long startTime, Long endTime, Integer limit) {
+		List<TbBnFutureCandleOneMin> lstResCandle = new ArrayList<TbBnFutureCandleOneMin>(); 
 		for(Candlestick cd : bnFutureApi.syncRequestClient().getCandlestick(symbol, interval.getCandlestickInterval(), startTime, endTime, limit)) {
-			TbBnFutureCandle tbfcm = new TbBnFutureCandleMin(symbol, cd);
+			TbBnFutureCandleOneMin tbfcm = new TbBnFutureCandleOneMin(symbol, cd);
 			lstResCandle.add(tbfcm);
 		}		
 		return lstResCandle;
