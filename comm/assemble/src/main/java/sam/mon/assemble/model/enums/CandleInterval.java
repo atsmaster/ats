@@ -1,11 +1,8 @@
 package sam.mon.assemble.model.enums;
 
-import com.binance.client.model.enums.CandlestickInterval;
-
 public enum CandleInterval {
-	ONE_MINUTE("1m", CandlestickInterval.ONE_MINUTE);
-//    THREE_MINUTES("3m"),
-//    FIVE_MINUTES("5m"),
+	ONE_MIN("1m"),
+    FIVE_MINUTES("5m");
 //    FIFTEEN_MINUTES("15m"),
 //    HALF_HOURLY("30m"),
 //    HOURLY("1h"),
@@ -20,18 +17,12 @@ public enum CandleInterval {
 //    MONTHLY("1M");
 
     private final String code;
-    private final CandlestickInterval candlestickInterval;
 
-    CandleInterval(String code, CandlestickInterval candlestickInterval) {
+    CandleInterval(String code) {
         this.code = code;
-        this.candlestickInterval = candlestickInterval;
     }
 
     public String getCode() {
         return code;
-    }
-    
-    public CandlestickInterval getCandlestickInterval() {
-        return candlestickInterval;
     }
 }

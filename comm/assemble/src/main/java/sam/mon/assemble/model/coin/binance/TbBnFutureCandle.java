@@ -5,12 +5,15 @@ import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.domain.Persistable;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.binance.client.model.market.Candlestick;
 
@@ -18,14 +21,19 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "tb_bn_future_candle_one_min")
+@Table(name = "tb_bn_future_candle")
 @IdClass(TbBnFutureCandleId.class)
-public class TbBnFutureCandleOneMin{
+@EntityListeners(AuditingEntityListener.class) // @CreatedDate, @LastModifiedDate
+public class TbBnFutureCandle implements Persistable<TbBnFutureCandleId>{
 	
 	@Id
 	@Column(columnDefinition = "varchar(50) comment '종목명'")
 	private String symbol;
 
+	@Id
+	@Column(columnDefinition = "varchar(3) comment '시간 타입'")
+	private String timeEnumTp;
+	
 	@Id	
 	@Column(columnDefinition = "timestamp comment '시작일시'")
 	private Timestamp timeOpen; // jpa 복합키는 알파벳 순서로 생성되기 때문에 symbol 보다 늦은순서인 timeopen으로 수정
@@ -57,8 +65,23 @@ public class TbBnFutureCandleOneMin{
     @Column(columnDefinition = "timestamp comment '수정일시'")
     @LastModifiedDate
     private Timestamp corrDate;    
+
+    
+    // ------------------------------ 영속성 관리를 위함
+	@Override
+	public boolean isNew() {
+		return true;
+	}
 	
-    public TbBnFutureCandleOneMin(String symbol, Candlestick candlestick) {
+	@Override
+	public TbBnFutureCandleId getId() {
+		return TbBnFutureCandleId.builder()
+				.symbol(symbol)
+				.timeEnumTp(timeEnumTp)
+				.timeOpen(timeOpen).build();	
+	}	
+	
+    public TbBnFutureCandle(String symbol, Candlestick candlestick) {
     	this.symbol = symbol;
     	this.timeOpen = new Timestamp(candlestick.getOpenTime());		
     	this.open = candlestick.getOpen();

@@ -1,6 +1,8 @@
 
 package sam.mon.batch.collect.coin.task;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -11,11 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import edu.emory.mathcs.backport.java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import sam.mon.assemble.api.coin.binance.impl.ApiRequestImpl;
-import sam.mon.assemble.model.coin.binance.TbBnFutureCandleOneMin;
+import sam.mon.assemble.model.coin.binance.TbBnFutureCandle;
+import sam.mon.assemble.model.coin.binance.TbBnFutureExchangeInfoEntry;
 import sam.mon.assemble.model.enums.CandleInterval;
-import sam.mon.assemble.repo.coin.binance.TbBnFutureCandleMinRepo;
+import sam.mon.assemble.repo.coin.binance.TbBnFutureCandleRepo;
+import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryRepo;
 
 
 @Slf4j
@@ -24,7 +29,10 @@ import sam.mon.assemble.repo.coin.binance.TbBnFutureCandleMinRepo;
 public class ExchBnFutureCandleTasklet implements Tasklet {
 
 	@Autowired
-	TbBnFutureCandleMinRepo tbBnFutureCandleMinRepo;
+	TbBnFutureCandleRepo tbBnFutureCandleRepo;
+	
+	@Autowired
+	TbBnFutureExchangeInfoEntryRepo tbBnFutureExchangeInfoEntryRepo;
 
 	@Autowired
 	ApiRequestImpl apiRequestImpl;
@@ -39,14 +47,31 @@ public class ExchBnFutureCandleTasklet implements Tasklet {
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		
-		log.info("ho");
-
-		List<TbBnFutureCandleOneMin> lstResEntry = apiRequestImpl.getCandle("BTCUSDT", CandleInterval.ONE_MINUTE, null, null, 1500);
+		Optional<TbBnFutureExchangeInfoEntry> aa = tbBnFutureExchangeInfoEntryRepo.findById("BTCUSDT");
+		Timestamp onboard =  aa.get().getOnboardDate();
+		Timestamp curr =  new Timestamp(System.currentTimeMillis());
 		
+		
+		while(true) {
+			if(curr.compareTo(onboard)==-1)
+				break;			
 
-		log.info("hi");
-	
-        
+			log.info(onboard.toString());
+			
+			
+			List<TbBnFutureCandle> lstResEntry = apiRequestImpl.getCandle("BTCUSDT", CandleInterval.ONE_MIN, onboard, null, 1500);
+			
+			onboard.setTime(onboard.getTime() + TimeUnit.MINUTES.toMillis(1500));
+			
+		}
+			
+		
+		
+		
+		
+//		List<TbBnFutureCandle> lstResEntry = apiRequestImpl.getCandle("BTCUSDT", CandleInterval.ONE_MIN, null, null, 1500);
+//		tbBnFutureCandleRepo.saveAll(lstRessEntry);
+		
 //		 List<String> aaa = tbBnFutureCandleMinRepo.findAllMaxOpenTime();
 
 //		// 시스템에 저장된 Db Entry 

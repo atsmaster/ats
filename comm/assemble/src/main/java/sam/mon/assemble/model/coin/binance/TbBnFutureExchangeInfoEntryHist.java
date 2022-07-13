@@ -23,9 +23,9 @@ import sam.mon.assemble.model.util.convert.StringArrayConverter;
 
 @Data
 @Entity 
-@EntityListeners(AuditingEntityListener.class) // @CreatedDate, @LastModifiedDate
 @Table(name = "tb_bn_future_exchang_info_entry_hist")
 @IdClass(TbBnFutureExchangeInfoEntryHistId.class)
+@EntityListeners(AuditingEntityListener.class) // @CreatedDate, @LastModifiedDate
 public class TbBnFutureExchangeInfoEntryHist implements Persistable<TbBnFutureExchangeInfoEntryHistId> {
 	
 //    @EmbeddedId    		

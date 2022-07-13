@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 import sam.mon.assemble.repo.TbTestRepo;
-import sam.mon.assemble.repo.coin.binance.TbBnFutureCandleMinRepo;
+import sam.mon.assemble.repo.coin.binance.TbBnFutureCandleRepo;
 import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryHistRepo;
 import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryRepo;
 
@@ -26,7 +26,7 @@ public class SampleTasklet implements Tasklet, StepExecutionListener{
 	TbTestRepo tbTestRepo;
 	
 	@Autowired
-	TbBnFutureCandleMinRepo tbBinanceFutureCandleMinRepo;
+	TbBnFutureCandleRepo tbBinanceFutureCandleMinRepo;
 	
 	@Autowired
 	TbBnFutureExchangeInfoEntryRepo tbBnFutureExchangeInfoEntryRepo;

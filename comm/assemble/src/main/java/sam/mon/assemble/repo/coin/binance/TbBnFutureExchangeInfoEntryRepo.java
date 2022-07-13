@@ -10,7 +10,6 @@ import sam.mon.assemble.model.coin.binance.TbBnFutureExchangeInfoEntry;
 @Repository
 public interface TbBnFutureExchangeInfoEntryRepo extends JpaRepository<TbBnFutureExchangeInfoEntry, String>{
 	
-	
 	List<TbBnFutureExchangeInfoEntry> findByListYn(Boolean listYn);
 
 }
