@@ -48,21 +48,28 @@ public class ExchBnFutureCandleTasklet implements Tasklet {
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
 		
 		Optional<TbBnFutureExchangeInfoEntry> aa = tbBnFutureExchangeInfoEntryRepo.findById("BTCUSDT");
-		Timestamp onboard =  aa.get().getOnboardDate();
+		Timestamp onboard =  new Timestamp( aa.get().getOnboardDate().getTime());
 		Timestamp curr =  new Timestamp(System.currentTimeMillis());
-		
-		
+
+		Timestamp startTime = onboard;
+		Timestamp endTime;
+		long min = 1500l;
+		int cnt = 0;
 		while(true) {
 			if(curr.compareTo(onboard)==-1)
 				break;			
-
-			log.info(onboard.toString());
 			
+			endTime = new Timestamp(startTime.getTime() + TimeUnit.MINUTES.toMillis(min-1)); 
 			
-			List<TbBnFutureCandle> lstResEntry = apiRequestImpl.getCandle("BTCUSDT", CandleInterval.ONE_MIN, onboard, null, 1500);
+			List<TbBnFutureCandle> lstResEntry = apiRequestImpl.getCandle("BTCUSDT", CandleInterval.ONE_MIN, startTime, endTime, 1500);
+			tbBnFutureCandleRepo.saveAll(lstResEntry);
 			
-			onboard.setTime(onboard.getTime() + TimeUnit.MINUTES.toMillis(1500));
+			log.info(startTime  + "");
+			log.info(endTime  + "");
+			log.info("-----------------------------------------------------" + ++cnt);
 			
+			startTime.setTime(startTime.getTime() + TimeUnit.MINUTES.toMillis(min));
+			Thread.sleep(1000);
 		}
 			
 		
