@@ -52,9 +52,6 @@ public class TbBnFutureCandle implements Persistable<TbBnFutureCandleId>{
 
     @Column(columnDefinition = "decimal(30,10) comment '기초자산 거래량'")
     private BigDecimal volume;
-
-    @Column(columnDefinition = "decimal(30,10) comment '주문수'")
-    private Integer numTrades;
     
     // --------------------------------
 	
@@ -89,6 +86,5 @@ public class TbBnFutureCandle implements Persistable<TbBnFutureCandleId>{
     	this.low = candlestick.getLow();
     	this.close = candlestick.getClose();
     	this.volume = candlestick.getVolume();
-    	this.numTrades = candlestick.getNumTrades();
     }
 }
