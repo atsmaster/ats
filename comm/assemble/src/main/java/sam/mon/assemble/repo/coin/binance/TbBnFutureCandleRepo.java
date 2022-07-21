@@ -30,4 +30,6 @@ public interface TbBnFutureCandleRepo extends JpaRepository<TbBnFutureCandle, Tb
         )
         List<MaxTimeOpenOfSymbol> findMaxOpenTimeOfSymbol();
     
+    
+    
 }

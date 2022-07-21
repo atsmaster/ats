@@ -1,5 +1,7 @@
 package sam.mon.batch.collect.coin.job;
 
+import java.sql.Timestamp;
+
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
@@ -12,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import sam.mon.batch.collect.coin.task.ExchBnFutureCandleTasklet;
-import sam.mon.batch.collect.coin.task.ExchBnFutureEntryTasklet;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -30,13 +31,13 @@ public class ExchBnFutureCandleJobConfig {
     	log.info(">>>>> start exchBnFutureCandleJob");
         return jobBuilderFactory.get("exchBnFutureCandleJob")
         		.preventRestart()
-                .start(exchBnFutureCandleStep(null))
+                .start(exchBnFutureCandleStep(null, null))
                 .build();
     }
 
     @Bean
 	@JobScope
-	public Step exchBnFutureCandleStep(@Value("#{jobParameters[requestDate]}") String requestDate) {
+	public Step exchBnFutureCandleStep(@Value("#{jobParameters[requestDate]}") String requestDate, @Value("#{jobParameters[endTime]}") Timestamp endTime) {
 		log.info(">>>>> This is exchBnFutureCandleStep");
 		return stepBuilderFactory
 				.get("exchBnFutureCandleStep")
