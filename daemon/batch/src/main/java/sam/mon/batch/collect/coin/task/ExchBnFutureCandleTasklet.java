@@ -34,7 +34,6 @@ import sam.mon.assemble.repo.coin.binance.TbBnFutureExchangeInfoEntryRepo;
 @Slf4j
 @Component
 @StepScope
-@Transactional
 public class ExchBnFutureCandleTasklet implements Tasklet {
 
 	@Autowired
